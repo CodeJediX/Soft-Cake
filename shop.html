@@ -305,7 +305,7 @@
             </nav>
 
             <div class="nav-icons">
-                <a href="login.html" class="nav-icon-link"><i class="fas fa-user"></i></a>
+                <a href="login.html" class="nav-icon-link" id="nav-user-icon"><i class="fas fa-user"></i></a>
                 <a href="wishlist.html" class="nav-icon-link"><i class="fas fa-heart"></i></a>
                 <a href="cart.html" class="nav-icon-link"><i class="fas fa-shopping-cart"></i> <span class="cart-badge" id="cart-count">0</span></a>
             </div>
@@ -425,40 +425,32 @@
             }
         }
 
-        // --- DATA ---
-        const softCakeData = [
-            // Sandwiches
+        // --- DYNAMIC DATA ---
+        // Same fallback logic as Index
+        const defaultData = [
             { id: 101, name: "Egg Sandwich", price: 100, cat: "savoury", img: "https://images.unsplash.com/photo-1553909489-cd47e3b4430f?auto=format&fit=crop&w=600&q=80", desc: "Classic creamy egg filling." },
             { id: 102, name: "Fish Sandwich", price: 100, cat: "savoury", img: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=600&q=80", desc: "Spicy tuna fish mix." },
             { id: 103, name: "Chicken Sandwich", price: 150, cat: "savoury", img: "https://images.unsplash.com/photo-1509722747041-616f39b57569?auto=format&fit=crop&w=600&q=80", desc: "Roast chicken spread." },
             { id: 104, name: "Veg Sandwich", price: 100, cat: "savoury", img: "https://images.unsplash.com/photo-1540713475856-3a3a28eb0ef0?auto=format&fit=crop&w=600&q=80", desc: "Fresh garden vegetables." },
-            
-            // Rolls
             { id: 201, name: "Egg Roll", price: 150, cat: "savoury", img: "https://images.unsplash.com/photo-1606757389656-78c66c3a2f8b?auto=format&fit=crop&w=600&q=80", desc: "Chinese style egg roll." },
             { id: 202, name: "Fish Roll", price: 110, cat: "savoury", img: "https://images.unsplash.com/photo-1626804475297-411d8c6b71f5?auto=format&fit=crop&w=600&q=80", desc: "Crispy fish roll." },
             { id: 203, name: "Chicken Roll", price: 130, cat: "savoury", img: "https://images.unsplash.com/photo-1541529086526-db283c563270?auto=format&fit=crop&w=600&q=80", desc: "Savoury chicken filling." },
             { id: 204, name: "Veg Roll", price: 110, cat: "savoury", img: "https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?auto=format&fit=crop&w=600&q=80", desc: "Spicy vegetable mix." },
-
-            // Patties
             { id: 301, name: "Fish Patty", price: 110, cat: "savoury", img: "https://images.unsplash.com/photo-1626804475317-a5509a25032a?auto=format&fit=crop&w=600&q=80", desc: "Flaky pastry with fish." },
             { id: 302, name: "Chicken Patty", price: 140, cat: "savoury", img: "https://images.unsplash.com/photo-1579306194872-64d3b7bac4c2?auto=format&fit=crop&w=600&q=80", desc: "Golden crust chicken patty." },
             { id: 303, name: "Veg Patty", price: 110, cat: "savoury", img: "https://images.unsplash.com/photo-1626804475297-411d8c6b71f5?auto=format&fit=crop&w=600&q=80", desc: "Delicious potato & veg." },
-
-            // Sweets & Treats
             { id: 401, name: "Chocolate Éclair", price: 140, cat: "sweets", img: "https://images.unsplash.com/photo-1612203985729-70726954388c?auto=format&fit=crop&w=600&q=80", desc: "Choux pastry with cream." },
             { id: 402, name: "Mini Pizza", price: 200, cat: "savoury", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80", desc: "Bite sized cheesy delight." },
             { id: 403, name: "Butter Cupcake", price: 130, cat: "sweets", img: "https://images.unsplash.com/photo-1519340333755-56e9c1d04579?auto=format&fit=crop&w=600&q=80", desc: "Soft butter cupcake." },
             { id: 404, name: "Choc Cupcake", price: 150, cat: "sweets", img: "https://images.unsplash.com/photo-1550617931-e17a7b70dce2?auto=format&fit=crop&w=600&q=80", desc: "Rich chocolate frosted." },
-
-            // Cakes (Prices for 1kg now)
             { id: 501, name: "Butter Cake", price: 1300, cat: "cakes", img: "https://images.unsplash.com/photo-1563729784474-d779b95f8bc2?auto=format&fit=crop&w=600&q=80", desc: "Premium butter cake." },
             { id: 502, name: "Chocolate Cake", price: 1700, cat: "cakes", img: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80", desc: "Dark fudge chocolate." },
             { id: 503, name: "Ribbon Cake", price: 1500, cat: "cakes", img: "https://images.unsplash.com/photo-1586788680434-30d32443d465?auto=format&fit=crop&w=600&q=80", desc: "Colorful ribbon layers." }
         ];
 
-        let products = JSON.parse(localStorage.getItem('softCakeProducts'));
-        if (!products || products.length === 0) {
-            products = softCakeData;
+        let products = JSON.parse(localStorage.getItem('softCakeProducts')) || [];
+        if (products.length === 0) {
+            products = defaultData;
             localStorage.setItem('softCakeProducts', JSON.stringify(products));
         }
 
@@ -481,7 +473,7 @@
                 grid.innerHTML += `
                     <div class="product-card" data-aos="fade-up" data-aos-delay="${i * 50}">
                         <div class="img-box">
-                            <img src="${p.img}" alt="${p.name}">
+                            <img src="${p.img}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/300'">
                             <div class="actions">
                                 <button class="btn-add" onclick="openModal(${p.id})">
                                     <i class="fas fa-cart-plus"></i> Select / Add
@@ -632,6 +624,13 @@
         function updateBadge() {
             const cart = JSON.parse(localStorage.getItem('softCakeCart')) || [];
             document.getElementById('cart-count').innerText = cart.length;
+
+            // Check login status
+            const user = JSON.parse(localStorage.getItem('softCakeUser'));
+            if(user) {
+                document.getElementById('nav-user-icon').innerHTML = '<i class="fas fa-check-circle" style="color:green"></i>';
+                document.getElementById('nav-user-icon').title = "Hi " + user.name;
+            }
         }
         window.onload = updateBadge;
 

@@ -283,13 +283,10 @@
         // --- DATA MANAGEMENT ---
         function loadData() {
             const storedData = JSON.parse(localStorage.getItem('softCakeProducts'));
-            // Default data if empty
+            // Default data if empty (This should be handled by Index now, but keeping backup)
             if (!storedData || storedData.length === 0) {
-                products = [
-                    { id: 1, name: "Chocolate Cake", price: 1500, cat: "cakes", img: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=200", desc: "Dark fudge.", sale: true },
-                    { id: 2, name: "Fish Roll", price: 120, cat: "savoury", img: "https://images.unsplash.com/photo-1606101237255-b77207611a2f?w=200", desc: "Spicy filling.", sale: false }
-                ];
-                localStorage.setItem('softCakeProducts', JSON.stringify(products));
+                 // We don't force default here anymore, we let Admin start empty OR use Index data
+                 products = []; 
             } else {
                 products = storedData;
             }

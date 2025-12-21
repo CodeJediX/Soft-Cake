@@ -250,7 +250,7 @@
             </nav>
 
             <div class="nav-icons">
-                <a href="login.html"><i class="fas fa-user"></i></a>
+                <a href="login.html" id="nav-user-icon"><i class="fas fa-user"></i></a>
                 <a href="wishlist.html"><i class="fas fa-heart"></i></a>
                 <a href="cart.html"><i class="fas fa-shopping-cart"></i> <span class="cart-badge" id="cart-count">0</span></a>
             </div>
@@ -443,8 +443,9 @@
             }
         }
 
-        // --- DATA ---
-        const softCakeData = [
+        // --- DYNAMIC DATA LOGIC ---
+        // 1. Define default data (fallback)
+        const defaultData = [
             // Sandwiches
             { id: 101, name: "Egg Sandwich", price: 100, cat: "savoury", img: "https://images.unsplash.com/photo-1553909489-cd47e3b4430f?auto=format&fit=crop&w=600&q=80", desc: "Classic creamy egg filling." },
             { id: 102, name: "Fish Sandwich", price: 100, cat: "savoury", img: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=600&q=80", desc: "Spicy tuna fish mix." },
@@ -468,21 +469,26 @@
             { id: 403, name: "Butter Cupcake", price: 130, cat: "sweets", img: "https://images.unsplash.com/photo-1519340333755-56e9c1d04579?auto=format&fit=crop&w=600&q=80", desc: "Soft butter cupcake." },
             { id: 404, name: "Choc Cupcake", price: 150, cat: "sweets", img: "https://images.unsplash.com/photo-1550617931-e17a7b70dce2?auto=format&fit=crop&w=600&q=80", desc: "Rich chocolate frosted." },
 
-            // Cakes (Prices for 1kg now)
+            // Cakes
             { id: 501, name: "Butter Cake", price: 1300, cat: "cakes", img: "https://images.unsplash.com/photo-1563729784474-d779b95f8bc2?auto=format&fit=crop&w=600&q=80", desc: "Premium butter cake." },
             { id: 502, name: "Chocolate Cake", price: 1700, cat: "cakes", img: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80", desc: "Dark fudge chocolate." },
             { id: 503, name: "Ribbon Cake", price: 1500, cat: "cakes", img: "https://images.unsplash.com/photo-1586788680434-30d32443d465?auto=format&fit=crop&w=600&q=80", desc: "Colorful ribbon layers." }
         ];
 
-        let products = softCakeData;
-        localStorage.setItem('softCakeProducts', JSON.stringify(products));
+        // 2. Load from LocalStorage OR use default (and save default for Admin to see)
+        let products = JSON.parse(localStorage.getItem('softCakeProducts')) || [];
+        
+        if (products.length === 0) {
+            products = defaultData;
+            localStorage.setItem('softCakeProducts', JSON.stringify(products));
+        }
 
         // --- RENDER CARDS ---
         function createCard(p, delay) {
             return `
                 <div class="product-card" data-aos="fade-up" data-aos-delay="${delay}">
                     <div class="card-img-box">
-                        <img src="${p.img}" alt="${p.name}">
+                        <img src="${p.img}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/300?text=No+Image'">
                         <div class="quick-view" onclick="openModal(${p.id})">Quick View</div>
                     </div>
                     <div class="card-info">
@@ -496,25 +502,37 @@
 
         function render(cat, id) {
             const container = document.getElementById(id);
-            // Limit to 4 items strictly as requested
+            // Limit to 4 items
             const items = products.filter(p => p.cat === cat).slice(0, 4);
             let delay = 0;
-            container.innerHTML = items.map(p => {
-                delay += 50;
-                return createCard(p, delay);
-            }).join('');
+            if(items.length > 0) {
+                container.innerHTML = items.map(p => {
+                    delay += 50;
+                    return createCard(p, delay);
+                }).join('');
+            } else {
+                container.innerHTML = '<p style="grid-column:1/-1; text-align:center;">Coming Soon...</p>';
+            }
         }
 
-        // Render sections
+        // Render sections dynamically
         render('cakes', 'cakes-container');
         render('savoury', 'savoury-container');
         render('sweets', 'sweets-container');
 
-        // Render Most Sold (Strictly 4 popular items)
+        // Render Most Sold (Try specific IDs, fallback to any 4 items)
         function renderMostSold() {
             const container = document.getElementById('most-sold-container');
-            const mostSoldIds = [202, 502, 103, 401];
-            const items = products.filter(p => mostSoldIds.includes(p.id));
+            const popularIds = [202, 502, 103, 401]; // Preferred IDs
+            
+            // Try to find preferred, if not found (admin deleted), take random 4
+            let items = products.filter(p => popularIds.includes(p.id));
+            
+            if(items.length < 4) {
+                // If specific items missing, fill with others
+                const remaining = products.filter(p => !popularIds.includes(p.id)).slice(0, 4 - items.length);
+                items = items.concat(remaining);
+            }
             
             let delay = 0;
             container.innerHTML = items.map(p => {
@@ -539,6 +557,7 @@
 
         function openModal(id) {
             curProd = products.find(p => p.id === id);
+            if(!curProd) return;
             
             // Populate Data
             document.getElementById('m-name').innerText = curProd.name;
@@ -639,6 +658,13 @@
         function updateBadge() {
             const cart = JSON.parse(localStorage.getItem('softCakeCart')) || [];
             document.getElementById('cart-count').innerText = cart.length;
+            
+            // Check login status
+            const user = JSON.parse(localStorage.getItem('softCakeUser'));
+            if(user) {
+                document.getElementById('nav-user-icon').innerHTML = '<i class="fas fa-check-circle" style="color:green"></i>';
+                document.getElementById('nav-user-icon').title = "Hi " + user.name;
+            }
         }
         window.onload = updateBadge;
     </script>

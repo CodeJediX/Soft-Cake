@@ -319,7 +319,7 @@
 
             <div id="login-form" class="form-section active">
                 <div class="input-group">
-                    <input type="text" required>
+                    <input type="text" id="login-user" required>
                     <label>Email or Username</label>
                     <i class="fas fa-user"></i>
                 </div>
@@ -334,7 +334,7 @@
                     <a href="#">Forgot Password?</a>
                 </div>
 
-                <button class="btn-submit" onclick="simulateLogin()">Sign In</button>
+                <button class="btn-submit" onclick="handleLogin()">Sign In</button>
                 
                 <p class="social-text">Or continue with</p>
                 <div class="social-media">
@@ -346,17 +346,17 @@
 
             <div id="register-form" class="form-section">
                 <div class="input-group">
-                    <input type="text" required>
+                    <input type="text" id="reg-name" required>
                     <label>Full Name</label>
                     <i class="fas fa-id-card"></i>
                 </div>
                 <div class="input-group">
-                    <input type="email" required>
+                    <input type="email" id="reg-email" required>
                     <label>Email Address</label>
                     <i class="fas fa-envelope"></i>
                 </div>
                 <div class="input-group">
-                    <input type="tel" required>
+                    <input type="tel" id="reg-phone" required>
                     <label>Mobile Number</label>
                     <i class="fas fa-phone"></i>
                 </div>
@@ -366,7 +366,7 @@
                     <i class="fas fa-lock"></i>
                 </div>
                 
-                <button class="btn-submit" onclick="alert('Registration Successful!')">Create Account</button>
+                <button class="btn-submit" onclick="handleRegister()">Create Account</button>
             </div>
 
             <div class="footer-link">
@@ -411,18 +411,53 @@
         }
     }
 
-    function simulateLogin() {
-        const btn = document.querySelector('.btn-submit');
+    // --- SAVE USER DATA FOR CHECKOUT ---
+    function handleRegister() {
+        const name = document.getElementById('reg-name').value;
+        const email = document.getElementById('reg-email').value;
+        const phone = document.getElementById('reg-phone').value;
+
+        if(!name || !email || !phone) {
+            alert("Please fill all details!");
+            return;
+        }
+
+        // Save to LocalStorage
+        const user = { name, email, phone };
+        localStorage.setItem('softCakeUser', JSON.stringify(user));
+
+        const btn = document.querySelector('#register-form .btn-submit');
+        btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Creating...';
         
-        // Add loading state
+        setTimeout(() => {
+            alert('Registration Successful! You are now logged in.');
+            window.location.href = 'index.html';
+        }, 1500);
+    }
+
+    function handleLogin() {
+        const userField = document.getElementById('login-user').value;
+        if(!userField) { alert("Please enter username"); return; }
+
+        // Simulate fetching details or just use what they entered as name
+        // In a real app, this comes from a database
+        const user = { 
+            name: userField, 
+            email: userField.includes('@') ? userField : userField + "@example.com", 
+            phone: "077xxxxxxx" // Default placeholder if just logging in
+        };
+        
+        localStorage.setItem('softCakeUser', JSON.stringify(user));
+
+        const btn = document.querySelector('#login-form .btn-submit');
         btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Authenticating...';
         btn.style.background = "#888";
         
         setTimeout(() => {
             btn.innerHTML = '<i class="fas fa-check"></i> Welcome Back!';
-            btn.style.background = "#28a745"; // Green for success
+            btn.style.background = "#28a745"; 
             setTimeout(() => {
-                window.location.href = 'index.html'; // Redirect to home
+                window.location.href = 'index.html';
             }, 1000);
         }, 1500);
     }
