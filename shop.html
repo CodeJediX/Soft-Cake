@@ -10,13 +10,14 @@
 
     <style>
         :root {
-            --primary: #d4a373;      /* Light Brown/Gold */
+            --primary: #c69c6d;      /* Light Brown/Gold */
             --primary-dark: #b08968;
             --bg-cream: #f9f5f0;     /* Background */
             --white: #ffffff;
             --text-dark: #4a4a4a;
             --text-light: #888;
             --heart-red: #e74c3c;
+            --success: #2ecc71;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
@@ -31,7 +32,7 @@
         /* --- HEADER --- */
         header {
             background: rgba(255, 255, 255, 0.98);
-            padding: 15px 40px; /* Wider padding for desktop */
+            padding: 15px 40px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.05);
             position: sticky; top: 0; z-index: 100;
         }
@@ -42,29 +43,21 @@
             align-items: center;
             max-width: 1400px;
             margin: 0 auto;
-            position: relative; /* Needed for absolute centering */
+            position: relative;
         }
 
-        /* Desktop: Logo Far Left */
         .logo { margin-right: auto; z-index: 2; }
         .logo a { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--text-dark); text-decoration: none; }
         .logo span { color: var(--primary); }
-        .logo img { height: 60px; transition: 0.3s; } /* Adjusted height */
+        .logo img { height: 60px; transition: 0.3s; }
 
-        /* Desktop: Nav Links Absolute Center */
         .nav-links-desktop { 
-            display: flex; 
-            gap: 30px; 
-            align-items: center;
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1;
+            display: flex; gap: 30px; align-items: center;
+            position: absolute; left: 50%; transform: translateX(-50%); z-index: 1;
         }
         .nav-link { color: var(--text-dark); text-decoration: none; font-weight: 500; transition:0.3s; font-size: 0.95rem; }
         .nav-link:hover { color: var(--primary); }
         
-        /* Desktop: Icons Far Right */
         .nav-icons { display: flex; align-items: center; margin-left: auto; z-index: 2; gap: 20px; }
         .nav-icon-link { font-size: 1.2rem; color: var(--text-dark); position: relative; transition: 0.3s; text-decoration: none; }
         .nav-icon-link:hover { color: var(--primary); }
@@ -75,14 +68,11 @@
         /* --- MOBILE DRAWER --- */
         .mobile-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1001; opacity: 0; visibility: hidden; transition: 0.3s; }
         .mobile-drawer { position: fixed; top: 0; left: 0; width: 280px; height: 100%; background: #fff; z-index: 1002; transform: translateX(-100%); transition: 0.4s cubic-bezier(0.77, 0, 0.175, 1); display: flex; flex-direction: column; padding-top: 60px; box-shadow: 5px 0 15px rgba(0,0,0,0.1); }
-        
         .drawer-active .mobile-overlay { opacity: 1; visibility: visible; }
         .drawer-active .mobile-drawer { transform: translateX(0); }
-        
         .drawer-close { position: absolute; top: 20px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #555; }
         .drawer-link { display: block; padding: 15px 30px; border-bottom: 1px solid #f5f5f5; font-size: 1rem; color: #333; font-weight: 500; text-decoration: none; }
         .drawer-link:hover { background: #fcfcfc; color: var(--primary); }
-
 
         /* --- PAGE LAYOUT --- */
         .page-banner {
@@ -97,58 +87,101 @@
             display: flex; gap: 40px; align-items: flex-start;
         }
 
-        /* --- SIDEBAR --- */
+        /* --- SIDEBAR (FILTER PANEL) --- */
         .sidebar {
             flex: 0 0 280px;
             background: var(--white);
-            padding: 30px;
+            padding: 25px;
             border-radius: 15px;
-            position: sticky; top: 90px;
+            position: sticky; top: 110px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.03);
             transition: 0.3s;
+            z-index: 900;
         }
 
-        .widget { margin-bottom: 35px; }
-        .widget h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; margin-bottom: 20px; position: relative; padding-bottom: 10px; }
-        .widget h3::after { content:''; position: absolute; bottom:0; left:0; width: 40px; height: 2px; background: var(--primary); }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .clear-btn { font-size: 0.8rem; color: var(--primary); cursor: pointer; text-decoration: underline; background: none; border: none; }
+        .close-filter-mobile { display: none; font-size: 1.5rem; cursor: pointer; }
 
+        .widget { margin-bottom: 30px; border-bottom: 1px solid #f5f5f5; padding-bottom: 20px; }
+        .widget:last-child { border-bottom: none; }
+        .widget h3 { 
+            font-family: 'Playfair Display', serif; font-size: 1.1rem; 
+            margin-bottom: 15px; color: var(--text-dark);
+        }
+        
         /* Search */
         .search-box { position: relative; }
         .search-box input {
             width: 100%; padding: 12px 15px; padding-right: 40px;
-            border: 1px solid #eee; border-radius: 25px;
-            font-family: inherit; color: var(--text-dark);
+            border: 1px solid #eee; border-radius: 8px;
+            font-family: inherit; color: var(--text-dark); background: #fcfcfc;
         }
         .search-box i { position: absolute; right: 15px; top: 13px; color: #ccc; }
 
-        /* Categories */
-        .cat-link {
-            display: flex; justify-content: space-between;
-            padding: 10px 0; color: var(--text-light); text-decoration: none;
-            transition: 0.3s; border-bottom: 1px dashed #eee;
+        /* Filter Options */
+        .filter-options { display: flex; flex-direction: column; gap: 10px; }
+        .filter-btn {
+            text-align: left; padding: 8px 10px; border-radius: 6px; cursor: pointer;
+            transition: 0.2s; display: flex; justify-content: space-between; align-items: center;
+            font-size: 0.9rem; color: var(--text-light);
         }
-        .cat-link:hover, .cat-link.active { color: var(--primary); padding-left: 5px; font-weight: 500; }
+        .filter-btn:hover { background: #fdfdfd; color: var(--primary); }
+        .filter-btn.active { background: var(--primary); color: white; font-weight: 500; }
+        .filter-btn span.count { font-size: 0.75rem; opacity: 0.7; }
+
+        /* Chips */
+        .chip-container { display: flex; flex-wrap: wrap; gap: 8px; }
+        .chip {
+            padding: 6px 12px; border-radius: 20px; border: 1px solid #eee;
+            font-size: 0.8rem; cursor: pointer; transition: 0.3s;
+            background: white; color: var(--text-light);
+        }
+        .chip:hover { border-color: var(--primary); color: var(--primary); }
+        .chip.active { background: var(--primary); color: white; border-color: var(--primary); }
 
         /* Price Range */
-        input[type=range] {
-            width: 100%; -webkit-appearance: none; background: transparent;
+        input[type=range] { width: 100%; accent-color: var(--primary); margin: 10px 0; }
+        .price-label { font-size: 0.9rem; color: var(--text-dark); font-weight: 600; display: flex; justify-content: space-between; }
+
+        /* Sort Dropdown */
+        .sort-select {
+            width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #eee;
+            color: var(--text-dark); font-family: inherit; cursor: pointer; background: white;
         }
-        input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%;
-            background: var(--primary); cursor: pointer; margin-top: -6px;
+
+        /* --- MOBILE FILTER TOGGLE BUTTON --- */
+        .mobile-filter-trigger {
+            display: none; /* Hidden on desktop */
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--text-dark);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 999;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            align-items: center;
+            gap: 10px;
+            animation: slideUp 0.5s ease;
         }
-        input[type=range]::-webkit-slider-runnable-track {
-            width: 100%; height: 4px; cursor: pointer; background: #eee; border-radius: 2px;
-        }
-        .price-label { font-size: 0.9rem; color: var(--text-dark); margin-top: 10px; font-weight: 600; display: flex; justify-content: space-between; }
+        @keyframes slideUp { from { transform: translate(-50%, 100px); } to { transform: translate(-50%, 0); } }
 
         /* --- PRODUCT GRID --- */
         .shop-content { flex: 1; width: 100%; }
         
+        .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .result-count { font-size: 0.9rem; color: #888; }
+
         .products-grid {
             display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); 
-            gap: 30px;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
+            gap: 25px;
         }
 
         .product-card {
@@ -158,7 +191,7 @@
             transition: 0.4s ease;
             position: relative;
             box-shadow: 0 5px 15px rgba(0,0,0,0.02);
-            border: 1px solid transparent;
+            border: 1px solid #f9f9f9;
         }
 
         .product-card:hover {
@@ -168,110 +201,112 @@
         }
 
         .img-box {
-            height: 260px; position: relative; overflow: hidden; background: #fdfdfd;
+            height: 240px; position: relative; overflow: hidden; background: #fdfdfd;
         }
         .img-box img { width: 100%; height: 100%; object-fit: cover; transition: 0.6s; }
         .product-card:hover .img-box img { transform: scale(1.1); }
 
-        /* Hover Actions */
         .actions {
-            position: absolute; bottom: 15px; left: 0; width: 100%;
+            position: absolute; bottom: 10px; left: 0; width: 100%;
             text-align: center; transform: translateY(50px); opacity: 0; transition: 0.4s;
         }
         .product-card:hover .actions { transform: translateY(0); opacity: 1; }
 
         .btn-add {
             background: var(--white); color: var(--text-dark);
-            border: none; padding: 10px 20px; border-radius: 30px;
+            border: none; padding: 8px 18px; border-radius: 30px;
             font-weight: 600; cursor: pointer; font-size: 0.8rem;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2); transition: 0.3s;
             display: inline-flex; align-items: center; gap: 8px;
         }
         .btn-add:hover { background: var(--primary); color: white; }
 
-        /* Card Info */
-        .info-box { padding: 20px; text-align: center; }
-        .info-box .cat { font-size: 0.75rem; text-transform: uppercase; color: #aaa; letter-spacing: 1px; }
-        .info-box h4 { font-family: 'Playfair Display', serif; font-size: 1.1rem; margin: 5px 0; color: var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
-        .info-box .price { color: var(--primary); font-weight: 700; font-size: 1.1rem; }
+        .info-box { padding: 15px; text-align: center; }
+        .info-box .cat { font-size: 0.7rem; text-transform: uppercase; color: #aaa; letter-spacing: 1px; margin-bottom: 5px;}
+        .info-box h4 { font-family: 'Playfair Display', serif; font-size: 1.1rem; margin: 0 0 5px; color: var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+        .info-box .price { color: var(--primary); font-weight: 700; font-size: 1rem; }
 
-        /* --- MODAL (POP-UP) STYLES --- */
+        /* Empty State */
+        .empty-state { grid-column: 1/-1; text-align: center; padding: 60px; color: #999; }
+        .empty-state i { font-size: 4rem; margin-bottom: 15px; color: #eee; }
+
+        /* --- TOAST & MODALS (From Index) --- */
+        #toast {
+            visibility: hidden; min-width: 280px; background-color: var(--white); color: #333;
+            text-align: center; border-radius: 50px; padding: 16px 24px; position: fixed; z-index: 3000;
+            left: 50%; bottom: 30px; transform: translateX(-50%);
+            font-size: 14px; opacity: 0; transition: opacity 0.5s, bottom 0.5s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid var(--primary);
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        #toast.show { visibility: visible; opacity: 1; bottom: 80px; } /* Lifted slightly for mobile btn */
+        #toast i { font-size: 1.2rem; }
+
+        /* Product Modal */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
         .modal-box { background: white; width: 900px; max-width: 90%; display: flex; box-shadow: 0 20px 50px rgba(0,0,0,0.5); animation: zoomIn 0.3s ease; position: relative; border-radius: 8px; overflow: hidden; }
         @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        
         .modal-img { flex: 1; background: #f0f0f0; }
         .modal-img img { width: 100%; height: 100%; object-fit: cover; }
-        
         .modal-details { flex: 1; padding: 30px 40px; display: flex; flex-direction: column; justify-content: center; overflow-y: auto; max-height: 90vh; }
         .close-modal { position: absolute; top: 15px; right: 20px; font-size: 2rem; cursor: pointer; color: #555; z-index: 10; background: rgba(255,255,255,0.8); border-radius: 50%; width: 40px; height: 40px; text-align: center; line-height: 40px; }
-
+        
         .modal-label { font-weight: 600; display: block; margin-bottom: 8px; font-size: 0.9rem; color: #555; }
-        .separator { width: 60px; height: 3px; background: var(--primary); margin: 10px 0 20px; }
-
         .custom-weight-inputs { display: flex; gap: 15px; align-items: center; margin-bottom: 15px; }
         .input-group { display: flex; align-items: center; gap: 5px; }
         .input-group input { width: 70px; padding: 8px; border: 1px solid #ddd; border-radius: 4px; text-align: center; }
-        .input-group span { font-weight: 500; font-size: 0.9rem; color: #666; }
-
         .qty-wrapper { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
         .qty-input { padding: 10px; width: 80px; text-align: center; border: 1px solid #ddd; border-radius: 4px; font-size: 1rem; }
-
         .modal-actions { display: flex; gap: 10px; align-items: center; margin-top: 10px; }
         .btn { display: inline-block; padding: 12px 30px; background: var(--primary); color: white; text-transform: uppercase; font-weight: 600; border: none; cursor: pointer; transition: 0.3s; letter-spacing: 1px; text-decoration: none; border-radius: 4px; text-align: center; }
         .btn:hover { background: var(--primary-dark); }
-
         .wishlist-btn { background: white; border: 1px solid #ddd; width: 50px; height: 46px; display: flex; align-items: center; justify-content: center; border-radius: 4px; cursor: pointer; transition: 0.3s; }
-        .wishlist-btn i { color: transparent; -webkit-text-stroke: 1.5px black; font-size: 1.4rem; transition: 0.3s; }
         .wishlist-btn.active i { color: var(--heart-red); -webkit-text-stroke: 0; }
+        .wishlist-btn i { color: transparent; -webkit-text-stroke: 1.5px black; font-size: 1.4rem; transition: 0.3s; }
 
-        /* --- TOAST NOTIFICATION --- */
-        #toast {
-            visibility: hidden; min-width: 280px;
-            background-color: var(--text-dark); color: #fff;
-            text-align: center; border-radius: 50px;
-            padding: 16px; position: fixed; z-index: 2000;
-            left: 50%; bottom: 30px; transform: translateX(-50%);
-            font-size: 14px; opacity: 0; transition: opacity 0.5s, bottom 0.5s;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-        #toast.show { visibility: visible; opacity: 1; bottom: 50px; }
-
-        /* --- RESPONSIVE MEDIA QUERIES --- */
+        /* --- RESPONSIVE ADJUSTMENTS --- */
         @media (max-width: 900px) {
             header { padding: 15px 20px; }
-            
-            .hamburger { display: block; order: 1; }
             .nav-links-desktop { display: none; }
-            
-            /* Logo Center Logic for Mobile */
-            .logo { 
-                position: absolute; 
-                left: 50%; 
-                transform: translateX(-50%); 
-                margin: 0; 
-                z-index: 1; 
-            }
+            .hamburger { display: block; order: 1; }
+            .nav-icons { margin-left: 0; order: 3; }
+            .logo { position: absolute; left: 50%; transform: translateX(-50%); margin: 0; z-index: 1; }
             .logo img { height: 50px; }
 
-            .nav-icons { margin-left: 0; order: 3; }
-            
-            /* Page Layout */
             .container { flex-direction: column; padding: 0 15px 60px; }
-            .sidebar { width: 100%; position: relative; top: 0; margin-bottom: 20px; padding: 20px; }
-            .page-banner h1 { font-size: 2rem; }
+            
+            /* HIDE SIDEBAR BY DEFAULT ON MOBILE */
+            .sidebar { 
+                position: fixed; 
+                top: 0; left: 0; 
+                width: 100%; height: 100vh; 
+                background: white; 
+                z-index: 2000; 
+                overflow-y: auto; 
+                transform: translateY(100%); /* Slide down hidden */
+                transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                display: block;
+                padding-top: 20px;
+                border-radius: 20px 20px 0 0;
+            }
+            .sidebar.active { transform: translateY(20%); /* Slide up to 80% height */ height: 80vh; bottom: 0; top: auto; box-shadow: 0 -10px 40px rgba(0,0,0,0.2); }
+            
+            /* Mobile Filter Overlay (Dim Background) */
+            .filter-overlay-bg {
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.5); z-index: 1999;
+                opacity: 0; visibility: hidden; transition: 0.3s;
+            }
+            .filter-overlay-bg.active { opacity: 1; visibility: visible; }
+
+            .close-filter-mobile { display: block; }
+            .mobile-filter-trigger { display: flex; }
 
             .products-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
-            
             .img-box { height: 160px; }
-            .info-box { padding: 15px 10px; }
-            .info-box h4 { font-size: 0.95rem; }
-            .info-box .price { font-size: 1rem; }
-            
             .actions { opacity: 1; transform: translateY(0); bottom: 10px; }
-            .btn-add { padding: 6px 12px; font-size: 0.7rem; }
-
-            /* Modal Mobile */
+            
+            /* Modal Adjustments */
             .modal-box { flex-direction: column; height: auto; max-height: 90vh; overflow-y: auto; }
             .modal-img { height: 250px; flex: none; }
             .modal-details { padding: 20px; }
@@ -290,6 +325,12 @@
         <a href="#contact" class="drawer-link">Contact</a>
     </div>
 
+    <div class="filter-overlay-bg" id="filterOverlay" onclick="toggleFilterSidebar()"></div>
+
+    <button class="mobile-filter-trigger" onclick="toggleFilterSidebar()">
+        <i class="fas fa-sliders-h"></i> Filter & Sort
+    </button>
+
     <header>
         <div class="navbar">
             <div class="hamburger" onclick="toggleDrawer()">
@@ -301,7 +342,6 @@
             <nav class="nav-links-desktop">
                 <a href="index.html" class="nav-link">Home</a>
                 <a href="shop.html" class="nav-link" style="color:var(--primary);">Shop</a>
-                
             </nav>
 
             <div class="nav-icons">
@@ -319,34 +359,71 @@
 
     <div class="container">
         
-        <aside class="sidebar" data-aos="fade-right">
+        <aside class="sidebar" id="filterSidebar">
+            <div class="sidebar-header">
+                <h3 style="margin:0;">Filters</h3>
+                <span class="close-filter-mobile" onclick="toggleFilterSidebar()">×</span>
+            </div>
+            
+            <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+                 <span class="result-count" id="mobile-res-count" style="display:none;">0 Results</span>
+                 <button class="clear-btn" onclick="clearFilters()">Clear All</button>
+            </div>
+
             <div class="widget">
-                <h3>Search</h3>
                 <div class="search-box">
-                    <input type="text" id="search-input" placeholder="Search cakes..." onkeyup="filterProducts()">
+                    <input type="text" id="search-input" placeholder="Search..." onkeyup="handleFilterChange()">
                     <i class="fas fa-search"></i>
                 </div>
             </div>
 
             <div class="widget">
-                <h3>Categories</h3>
-                <a href="#" class="cat-link active" onclick="setCategory('all', this)">All Products <span><i class="fas fa-chevron-right"></i></span></a>
-                <a href="#" class="cat-link" onclick="setCategory('cakes', this)">Cakes <span><i class="fas fa-chevron-right"></i></span></a>
-                <a href="#" class="cat-link" onclick="setCategory('savoury', this)">Savoury <span><i class="fas fa-chevron-right"></i></span></a>
-                <a href="#" class="cat-link" onclick="setCategory('sweets', this)">Sweets <span><i class="fas fa-chevron-right"></i></span></a>
+                <h3>Category</h3>
+                <div class="filter-options" id="category-filter">
+                    <div class="filter-btn active" onclick="setFilter('category', 'all')">All Products <span class="count" id="count-all">0</span></div>
+                    <div class="filter-btn" onclick="setFilter('category', 'cakes')">Cakes <span class="count" id="count-cakes">0</span></div>
+                    <div class="filter-btn" onclick="setFilter('category', 'savoury')">Savoury <span class="count" id="count-savoury">0</span></div>
+                    <div class="filter-btn" onclick="setFilter('category', 'sweets')">Sweets <span class="count" id="count-sweets">0</span></div>
+                </div>
             </div>
 
             <div class="widget">
-                <h3>Filter by Price</h3>
-                <input type="range" id="price-range" min="0" max="5000" value="5000" oninput="filterProducts()">
+                <h3>Cravings</h3>
+                <div class="chip-container" id="cravings-filter">
+                    <div class="chip" onclick="toggleCraving('Chocolate')">Chocolate</div>
+                    <div class="chip" onclick="toggleCraving('Fruity')">Fruity</div>
+                    <div class="chip" onclick="toggleCraving('Spicy')">Spicy</div>
+                    <div class="chip" onclick="toggleCraving('Creamy')">Creamy</div>
+                    <div class="chip" onclick="toggleCraving('Veggie')">Veggie</div>
+                </div>
+            </div>
+
+            <div class="widget">
+                <h3>Sort By</h3>
+                <select id="sort-order" class="sort-select" onchange="handleFilterChange()">
+                    <option value="default">Default Sorting</option>
+                    <option value="low-high">Price: Low to High</option>
+                    <option value="high-low">Price: High to Low</option>
+                </select>
+            </div>
+
+            <div class="widget">
+                <h3>Max Price</h3>
                 <div class="price-label">
                     <span>Rs. 0</span>
                     <span id="price-val">Rs. 5000</span>
                 </div>
+                <input type="range" id="price-range" min="0" max="5000" value="5000" oninput="handleFilterChange()">
             </div>
+            
+            <button class="btn" style="width:100%; display:none;" id="mobile-apply-btn" onclick="toggleFilterSidebar()">Apply Filters</button>
         </aside>
 
         <main class="shop-content">
+            <div class="toolbar">
+                <span class="result-count" id="res-count">Showing all products</span>
+            </div>
+            
             <div class="products-grid" id="grid">
                 </div>
         </main>
@@ -356,96 +433,85 @@
     <div id="productModal" class="modal">
         <div class="modal-box">
             <span class="close-modal" onclick="closeModal()">×</span>
-            
             <div class="modal-img">
                 <img id="m-img" src="" alt="">
             </div>
-            
             <div class="modal-details">
                 <h2 id="m-name" style="margin-bottom: 5px;">Product Name</h2>
-                <div class="separator"></div>
+                <div class="separator" style="margin: 10px 0 20px; width:40px;"></div>
                 <p id="m-desc" style="color:#666; margin-bottom: 20px; font-size: 0.9rem;">Description goes here.</p>
-                
                 <h3 id="m-price" style="color: var(--primary); font-size: 1.8rem; margin-bottom: 20px;">Rs. 200.00</h3>
-                
                 <div id="cake-options" style="display:none;">
                     <label class="modal-label">Enter Custom Weight:</label>
                     <div class="custom-weight-inputs">
                         <div class="input-group">
-                            <input type="number" id="w-kg" value="1" min="0" onchange="calculateTotal()"> 
-                            <span>kg</span>
+                            <input type="number" id="w-kg" value="1" min="0" onchange="calculateTotal()"> <span>kg</span>
                         </div>
                         <div class="input-group">
-                            <input type="number" id="w-g" value="0" min="0" step="50" onchange="calculateTotal()"> 
-                            <span>g</span>
+                            <input type="number" id="w-g" value="0" min="0" step="50" onchange="calculateTotal()"> <span>g</span>
                         </div>
                     </div>
                 </div>
-
                 <label class="modal-label">Quantity:</label>
                 <div class="qty-wrapper">
                     <input type="number" id="m-qty" value="1" min="1" class="qty-input" onchange="calculateTotal()">
                 </div>
-
                 <div style="margin-top: auto; border-top: 1px solid #eee; padding-top: 20px;">
                     <div style="display:flex; justify-content:space-between; margin-bottom: 10px; font-weight:bold;">
                         <span>Total:</span>
                         <span id="m-total-price">Rs. 0.00</span>
                     </div>
-                    
                     <div class="modal-actions">
                         <button class="btn" onclick="addToCartModal()" style="flex:1;">Add to Cart</button>
-                        <button class="wishlist-btn" id="m-wishlist-btn" onclick="toggleWishlist()">
-                            <i class="fas fa-heart"></i>
-                        </button>
+                        <button class="wishlist-btn" id="m-wishlist-btn" onclick="toggleWishlist()"><i class="fas fa-heart"></i></button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="toast"><i class="fas fa-check-circle" style="color: #4cd137; margin-right: 8px;"></i> Added to Cart Successfully!</div>
+    <div id="toast"><i class="fas fa-check-circle" style="color: #2ecc71;"></i> <span id="toast-message">Added to Cart!</span></div>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         AOS.init();
 
-        // --- MOBILE DRAWER LOGIC ---
+        // --- UI TOGGLES ---
         function toggleDrawer() {
-            const drawer = document.getElementById('mobileDrawer');
-            const overlay = document.getElementById('mobileOverlay');
-            const body = document.getElementById('body-lock');
+            document.getElementById('mobileDrawer').parentElement.classList.toggle('drawer-active');
+            document.getElementById('body-lock').style.overflow = document.getElementById('body-lock').style.overflow === 'hidden' ? 'auto' : 'hidden';
+        }
+
+        function toggleFilterSidebar() {
+            const sidebar = document.getElementById('filterSidebar');
+            const overlay = document.getElementById('filterOverlay');
+            const mobileApply = document.getElementById('mobile-apply-btn');
             
-            if(drawer.parentElement.classList.contains('drawer-active')) {
-                drawer.parentElement.classList.remove('drawer-active');
-                body.style.overflow = 'auto';
-            } else {
-                drawer.parentElement.classList.add('drawer-active');
-                body.style.overflow = 'hidden';
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+            
+            // Show "Apply" button only on mobile sidebar
+            if(window.innerWidth <= 900) {
+                mobileApply.style.display = sidebar.classList.contains('active') ? 'block' : 'none';
+                document.getElementById('mobile-res-count').style.display = 'block';
             }
         }
 
-        // --- DYNAMIC DATA ---
-        // Same fallback logic as Index
+        // --- DATA SETUP ---
         const defaultData = [
-            { id: 101, name: "Egg Sandwich", price: 100, cat: "savoury", img: "https://images.unsplash.com/photo-1553909489-cd47e3b4430f?auto=format&fit=crop&w=600&q=80", desc: "Classic creamy egg filling." },
-            { id: 102, name: "Fish Sandwich", price: 100, cat: "savoury", img: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=600&q=80", desc: "Spicy tuna fish mix." },
-            { id: 103, name: "Chicken Sandwich", price: 150, cat: "savoury", img: "https://images.unsplash.com/photo-1509722747041-616f39b57569?auto=format&fit=crop&w=600&q=80", desc: "Roast chicken spread." },
-            { id: 104, name: "Veg Sandwich", price: 100, cat: "savoury", img: "https://images.unsplash.com/photo-1540713475856-3a3a28eb0ef0?auto=format&fit=crop&w=600&q=80", desc: "Fresh garden vegetables." },
-            { id: 201, name: "Egg Roll", price: 150, cat: "savoury", img: "https://images.unsplash.com/photo-1606757389656-78c66c3a2f8b?auto=format&fit=crop&w=600&q=80", desc: "Chinese style egg roll." },
-            { id: 202, name: "Fish Roll", price: 110, cat: "savoury", img: "https://images.unsplash.com/photo-1626804475297-411d8c6b71f5?auto=format&fit=crop&w=600&q=80", desc: "Crispy fish roll." },
-            { id: 203, name: "Chicken Roll", price: 130, cat: "savoury", img: "https://images.unsplash.com/photo-1541529086526-db283c563270?auto=format&fit=crop&w=600&q=80", desc: "Savoury chicken filling." },
-            { id: 204, name: "Veg Roll", price: 110, cat: "savoury", img: "https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?auto=format&fit=crop&w=600&q=80", desc: "Spicy vegetable mix." },
-            { id: 301, name: "Fish Patty", price: 110, cat: "savoury", img: "https://images.unsplash.com/photo-1626804475317-a5509a25032a?auto=format&fit=crop&w=600&q=80", desc: "Flaky pastry with fish." },
-            { id: 302, name: "Chicken Patty", price: 140, cat: "savoury", img: "https://images.unsplash.com/photo-1579306194872-64d3b7bac4c2?auto=format&fit=crop&w=600&q=80", desc: "Golden crust chicken patty." },
-            { id: 303, name: "Veg Patty", price: 110, cat: "savoury", img: "https://images.unsplash.com/photo-1626804475297-411d8c6b71f5?auto=format&fit=crop&w=600&q=80", desc: "Delicious potato & veg." },
-            { id: 401, name: "Chocolate Éclair", price: 140, cat: "sweets", img: "https://images.unsplash.com/photo-1612203985729-70726954388c?auto=format&fit=crop&w=600&q=80", desc: "Choux pastry with cream." },
-            { id: 402, name: "Mini Pizza", price: 200, cat: "savoury", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80", desc: "Bite sized cheesy delight." },
-            { id: 403, name: "Butter Cupcake", price: 130, cat: "sweets", img: "https://images.unsplash.com/photo-1519340333755-56e9c1d04579?auto=format&fit=crop&w=600&q=80", desc: "Soft butter cupcake." },
-            { id: 404, name: "Choc Cupcake", price: 150, cat: "sweets", img: "https://images.unsplash.com/photo-1550617931-e17a7b70dce2?auto=format&fit=crop&w=600&q=80", desc: "Rich chocolate frosted." },
-            { id: 501, name: "Butter Cake", price: 1300, cat: "cakes", img: "https://images.unsplash.com/photo-1563729784474-d779b95f8bc2?auto=format&fit=crop&w=600&q=80", desc: "Premium butter cake." },
-            { id: 502, name: "Chocolate Cake", price: 1700, cat: "cakes", img: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80", desc: "Dark fudge chocolate." },
-            { id: 503, name: "Ribbon Cake", price: 1500, cat: "cakes", img: "https://images.unsplash.com/photo-1586788680434-30d32443d465?auto=format&fit=crop&w=600&q=80", desc: "Colorful ribbon layers." }
+            { id: 101, name: "Egg Sandwich", price: 100, cat: "savoury", img: "https://images.unsplash.com/photo-1553909489-cd47e3b4430f?w=300", desc: "Classic creamy egg filling.", tags: "creamy,egg" },
+            { id: 102, name: "Fish Sandwich", price: 100, cat: "savoury", img: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=300", desc: "Spicy tuna fish mix.", tags: "spicy,fish" },
+            { id: 103, name: "Chicken Sandwich", price: 150, cat: "savoury", img: "https://images.unsplash.com/photo-1509722747041-616f39b57569?w=300", desc: "Roast chicken spread.", tags: "spicy,chicken" },
+            { id: 104, name: "Veg Sandwich", price: 100, cat: "savoury", img: "https://images.unsplash.com/photo-1540713475856-3a3a28eb0ef0?w=300", desc: "Fresh garden vegetables.", tags: "veggie,fresh" },
+            { id: 201, name: "Egg Roll", price: 150, cat: "savoury", img: "https://images.unsplash.com/photo-1606757389656-78c66c3a2f8b?w=300", desc: "Chinese style egg roll.", tags: "egg,fried" },
+            { id: 202, name: "Fish Roll", price: 110, cat: "savoury", img: "https://images.unsplash.com/photo-1626804475297-411d8c6b71f5?w=300", desc: "Crispy fish roll.", tags: "spicy,fish" },
+            { id: 301, name: "Fish Patty", price: 110, cat: "savoury", img: "https://images.unsplash.com/photo-1626804475317-a5509a25032a?w=300", desc: "Flaky pastry with fish.", tags: "fish,pastry" },
+            { id: 401, name: "Chocolate Éclair", price: 140, cat: "sweets", img: "https://images.unsplash.com/photo-1612203985729-70726954388c?w=300", desc: "Choux pastry with cream.", tags: "chocolate,creamy" },
+            { id: 403, name: "Butter Cupcake", price: 130, cat: "sweets", img: "https://images.unsplash.com/photo-1519340333755-56e9c1d04579?w=300", desc: "Soft butter cupcake.", tags: "creamy,butter" },
+            { id: 404, name: "Choc Cupcake", price: 150, cat: "sweets", img: "https://images.unsplash.com/photo-1550617931-e17a7b70dce2?w=300", desc: "Rich chocolate frosted.", tags: "chocolate" },
+            { id: 501, name: "Butter Cake", price: 1300, cat: "cakes", img: "https://images.unsplash.com/photo-1563729784474-d779b95f8bc2?w=300", desc: "Premium butter cake.", tags: "creamy,butter" },
+            { id: 502, name: "Chocolate Cake", price: 1700, cat: "cakes", img: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=300", desc: "Dark fudge chocolate.", tags: "chocolate" },
+            { id: 503, name: "Ribbon Cake", price: 1500, cat: "cakes", img: "https://images.unsplash.com/photo-1586788680434-30d32443d465?w=300", desc: "Colorful ribbon layers.", tags: "fruity,creamy" }
         ];
 
         let products = JSON.parse(localStorage.getItem('softCakeProducts')) || [];
@@ -454,24 +520,107 @@
             localStorage.setItem('softCakeProducts', JSON.stringify(products));
         }
 
-        let activeCat = 'all';
+        // --- FILTER STATE ---
+        const state = {
+            search: "",
+            category: "all",
+            maxPrice: 5000,
+            cravings: [],
+            sort: "default"
+        };
 
-        // --- RENDER LOGIC ---
+        const tagsMap = {
+            'Chocolate': ['chocolate', 'choc', 'cocoa'],
+            'Fruity': ['fruit', 'ribbon', 'berry', 'lemon'],
+            'Spicy': ['fish', 'chicken', 'chilli', 'curry'],
+            'Creamy': ['butter', 'velvet', 'cream', 'éclair', 'cheese'],
+            'Veggie': ['veg', 'vegetable', 'potato']
+        };
+
+        // --- CORE FILTER ENGINE ---
+        function handleFilterChange() {
+            state.search = document.getElementById('search-input').value.toLowerCase();
+            state.maxPrice = document.getElementById('price-range').value;
+            state.sort = document.getElementById('sort-order').value;
+            document.getElementById('price-val').innerText = 'Rs. ' + state.maxPrice;
+
+            let filtered = products.filter(p => {
+                const matchesCat = state.category === 'all' || p.cat === state.category;
+                const matchesSearch = p.name.toLowerCase().includes(state.search);
+                const matchesPrice = p.price <= parseInt(state.maxPrice);
+                
+                let matchesCraving = true;
+                if(state.cravings.length > 0) {
+                    const pText = (p.name + " " + (p.desc || "") + " " + (p.tags || "")).toLowerCase();
+                    matchesCraving = state.cravings.some(craving => {
+                        const keywords = tagsMap[craving] || [];
+                        return keywords.some(k => pText.includes(k));
+                    });
+                }
+                return matchesCat && matchesSearch && matchesPrice && matchesCraving;
+            });
+
+            if(state.sort === 'low-high') filtered.sort((a, b) => a.price - b.price);
+            else if(state.sort === 'high-low') filtered.sort((a, b) => b.price - a.price);
+
+            render(filtered);
+            updateMobileCount(filtered.length);
+        }
+
+        function setFilter(type, value) {
+            if(type === 'category') {
+                state.category = value;
+                document.querySelectorAll('#category-filter .filter-btn').forEach(btn => btn.classList.remove('active'));
+                const index = ['all','cakes','savoury','sweets'].indexOf(value);
+                document.querySelectorAll('#category-filter .filter-btn')[index].classList.add('active');
+            }
+            handleFilterChange();
+        }
+
+        function toggleCraving(craving) {
+            const index = state.cravings.indexOf(craving);
+            if(index > -1) state.cravings.splice(index, 1);
+            else state.cravings.push(craving);
+
+            const chips = document.querySelectorAll('#cravings-filter .chip');
+            chips.forEach(chip => {
+                if(chip.innerText === craving) chip.classList.toggle('active');
+            });
+            handleFilterChange();
+        }
+
+        function clearFilters() {
+            state.search = ""; state.category = "all"; state.maxPrice = 5000; state.cravings = []; state.sort = "default";
+            document.getElementById('search-input').value = "";
+            document.getElementById('price-range').value = 5000;
+            document.getElementById('sort-order').value = "default";
+            
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector('.filter-btn:first-child').classList.add('active');
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+
+            handleFilterChange();
+        }
+
         function render(items) {
             const grid = document.getElementById('grid');
+            document.getElementById('res-count').innerText = `Showing ${items.length} result${items.length !== 1 ? 's' : ''}`;
             grid.innerHTML = "";
-            
+
             if(items.length === 0) {
-                grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 40px; color:#999;">
-                    <i class="far fa-frown" style="font-size:3rem; margin-bottom:10px;"></i>
-                    <p>No products match your criteria.</p>
-                </div>`;
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="far fa-frown"></i>
+                        <h3>No matches found</h3>
+                        <p>Try adjusting your filters or price range.</p>
+                        <button onclick="clearFilters()" class="btn" style="margin-top:10px;">Clear Filters</button>
+                    </div>`;
                 return;
             }
 
             items.forEach((p, i) => {
                 grid.innerHTML += `
-                    <div class="product-card" data-aos="fade-up" data-aos-delay="${i * 50}">
+                    <div class="product-card" data-aos="fade-up" data-aos-delay="${i * 30}">
                         <div class="img-box">
                             <img src="${p.img}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/300'">
                             <div class="actions">
@@ -490,50 +639,40 @@
             });
         }
 
-        // --- FILTERING LOGIC ---
-        function filterProducts() {
-            const searchVal = document.getElementById('search-input').value.toLowerCase();
-            const priceVal = document.getElementById('price-range').value;
-            document.getElementById('price-val').innerText = 'Rs. ' + priceVal;
-
-            const filtered = products.filter(p => {
-                const matchesCat = activeCat === 'all' || p.cat === activeCat;
-                const matchesSearch = p.name.toLowerCase().includes(searchVal);
-                const matchesPrice = p.price <= parseInt(priceVal);
-                return matchesCat && matchesSearch && matchesPrice;
-            });
-
-            render(filtered);
+        function updateMobileCount(count) {
+            document.getElementById('mobile-res-count').innerText = `${count} Results Found`;
         }
 
-        function setCategory(cat, el) {
-            document.querySelectorAll('.cat-link').forEach(l => l.classList.remove('active'));
-            el.classList.add('active');
-            activeCat = cat;
-            filterProducts();
+        function updateCounts() {
+            document.getElementById('count-all').innerText = products.length;
+            document.getElementById('count-cakes').innerText = products.filter(p=>p.cat==='cakes').length;
+            document.getElementById('count-savoury').innerText = products.filter(p=>p.cat==='savoury').length;
+            document.getElementById('count-sweets').innerText = products.filter(p=>p.cat==='sweets').length;
         }
 
-        // --- MODAL LOGIC ---
+        // --- INIT ---
+        window.onload = function() {
+            updateBadge();
+            updateCounts();
+            const params = new URLSearchParams(window.location.search);
+            const urlCat = params.get('cat');
+            if(urlCat) setFilter('category', urlCat);
+            else handleFilterChange();
+        };
+
+        // --- SHARED LOGIC (Cart, Modal) ---
         let curProd = null;
-
         function openModal(id) {
             curProd = products.find(p => p.id === id);
-            
-            // Populate Data
             document.getElementById('m-name').innerText = curProd.name;
             document.getElementById('m-desc').innerText = curProd.desc || 'Freshly baked goodness.';
             document.getElementById('m-img').src = curProd.img;
             document.getElementById('m-qty').value = 1;
+            document.getElementById('m-wishlist-btn').classList.remove('active');
             
-            // Wishlist Reset
-            const wishBtn = document.getElementById('m-wishlist-btn');
-            wishBtn.classList.remove('active');
-            
-            // Cake Logic Setup
             const cakeOptions = document.getElementById('cake-options');
             if(curProd.cat === 'cakes') {
                 cakeOptions.style.display = 'block';
-                // Default to 1kg 0g
                 document.getElementById('w-kg').value = 1;
                 document.getElementById('w-g').value = 0;
                 document.getElementById('m-price').innerText = 'Rs. ' + curProd.price + '.00 (1kg Base)';
@@ -541,113 +680,63 @@
                 cakeOptions.style.display = 'none';
                 document.getElementById('m-price').innerText = 'Rs. ' + curProd.price + '.00';
             }
-
             calculateTotal();
             document.getElementById('productModal').style.display = 'flex';
         }
-
         function closeModal() { document.getElementById('productModal').style.display = 'none'; }
-
+        
         function calculateTotal() {
-            const qty = parseInt(document.getElementById('m-qty').value);
-            if(qty < 1) { document.getElementById('m-qty').value = 1; return; }
-
+            const qty = parseInt(document.getElementById('m-qty').value) || 1;
             let unitPrice = curProd.price;
-
-            // Cake Dynamic Weight Calculation
             if(curProd.cat === 'cakes') {
                 const kg = parseInt(document.getElementById('w-kg').value) || 0;
                 const g = parseInt(document.getElementById('w-g').value) || 0;
-                
                 let totalGrams = (kg * 1000) + g;
-                
-                // If user enters 0, fallback to 1kg for calc safety
                 if(totalGrams <= 0) totalGrams = 1000;
-
-                // Base price is for 1000g (1kg)
-                const pricePerGram = curProd.price / 1000;
-                unitPrice = totalGrams * pricePerGram;
-                
-                // Update unit price display
+                unitPrice = totalGrams * (curProd.price / 1000);
                 document.getElementById('m-price').innerText = 'Rs. ' + unitPrice.toLocaleString() + '.00';
             }
-
-            const total = unitPrice * qty;
-            document.getElementById('m-total-price').innerText = 'Rs. ' + total.toLocaleString() + '.00';
-        }
-
-        function toggleWishlist() {
-            const btn = document.getElementById('m-wishlist-btn');
-            btn.classList.toggle('active');
+            document.getElementById('m-total-price').innerText = 'Rs. ' + (unitPrice * qty).toLocaleString() + '.00';
         }
 
         function addToCartModal() {
             const qty = parseInt(document.getElementById('m-qty').value);
             let sizeLabel = "Standard";
             let unitPrice = curProd.price;
-
             if(curProd.cat === 'cakes') {
                 const kg = parseInt(document.getElementById('w-kg').value) || 0;
                 const g = parseInt(document.getElementById('w-g').value) || 0;
                 let totalGrams = (kg * 1000) + g;
                 if(totalGrams <= 0) totalGrams = 1000;
-                
-                sizeLabel = (totalGrams >= 1000) 
-                    ? (totalGrams/1000) + "kg" 
-                    : totalGrams + "g";
-                
-                // Base price 1kg = 1000g
-                const pricePerGram = curProd.price / 1000;
-                unitPrice = totalGrams * pricePerGram;
+                sizeLabel = (totalGrams >= 1000) ? (totalGrams/1000) + "kg" : totalGrams + "g";
+                unitPrice = totalGrams * (curProd.price / 1000);
             }
-
             let cart = JSON.parse(localStorage.getItem('softCakeCart')) || [];
-            cart.push({ 
-                ...curProd, 
-                qty, 
-                size: sizeLabel, 
-                total: (unitPrice * qty) 
-            });
+            cart.push({ ...curProd, qty, size: sizeLabel, total: (unitPrice * qty) });
             localStorage.setItem('softCakeCart', JSON.stringify(cart));
-            
             updateBadge();
             closeModal();
-            showToast();
+            showToast("Added to Cart Successfully!");
         }
 
-        function showToast() {
+        function toggleWishlist() { document.getElementById('m-wishlist-btn').classList.toggle('active'); }
+        
+        function showToast(msg) {
             const x = document.getElementById("toast");
+            document.getElementById("toast-message").innerText = msg;
             x.className = "show";
-            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+            setTimeout(() => { x.className = x.className.replace("show", ""); }, 3000);
         }
 
         function updateBadge() {
             const cart = JSON.parse(localStorage.getItem('softCakeCart')) || [];
             document.getElementById('cart-count').innerText = cart.length;
-
-            // Check login status
             const user = JSON.parse(localStorage.getItem('softCakeUser'));
             if(user) {
                 document.getElementById('nav-user-icon').innerHTML = '<i class="fas fa-check-circle" style="color:green"></i>';
                 document.getElementById('nav-user-icon').title = "Hi " + user.name;
             }
         }
-        window.onload = updateBadge;
-
-        // Handle URL Params
-        const params = new URLSearchParams(window.location.search);
-        const urlCat = params.get('cat');
-        if(urlCat) {
-            const links = document.querySelectorAll('.cat-link');
-            links.forEach(link => {
-                if(link.getAttribute('onclick').includes(`'${urlCat}'`)) {
-                    setCategory(urlCat, link);
-                }
-            });
-        } else {
-            render(products);
-        }
-
     </script>
 </body>
 </html>
