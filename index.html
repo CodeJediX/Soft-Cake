@@ -11,12 +11,13 @@
     <style>
         /* --- GLOBAL VARIABLES --- */
         :root {
-            --primary: #c69c6d; /* Gold/Brown Accent */
+            --primary: #c69c6d;
             --primary-dark: #a67c52;
-            --section-brown: #f5efe6; /* Light Latte Brown for Backgrounds */
+            --section-brown: #f5efe6;
             --white: #ffffff;
             --text-dark: #2c2c2c;
             --text-light: #666666;
+            --heart-red: #e74c3c;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -38,10 +39,26 @@
 
         /* --- HEADER --- */
         header { background: var(--white); padding: 15px 40px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .navbar { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; }
+        
+        .navbar { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            max-width: 1400px; 
+            margin: 0 auto; 
+            position: relative; 
+        }
+
         .logo img { height: 75px; transition: 0.3s; }
         
-        /* Desktop Nav Links */
+        /* Desktop Nav Links - CENTERED */
+        .nav-links {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+        }
+
         .nav-links a { margin: 0 15px; text-decoration: none; color: var(--text-dark); font-weight: 500; text-transform: uppercase; font-size: 0.9rem; transition: 0.3s; position: relative; }
         .nav-links a::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -5px; left: 0; background-color: var(--primary); transition: 0.3s; }
         .nav-links a:hover::after { width: 100%; }
@@ -51,10 +68,9 @@
         .nav-icons a:hover { color: var(--primary); }
         .cart-badge { position: absolute; top: -8px; right: -10px; background: var(--primary); color: white; font-size: 0.7rem; padding: 2px 6px; border-radius: 50%; }
 
-        /* Hamburger Menu Icon (Hidden on Desktop) */
         .hamburger { display: none; font-size: 1.5rem; cursor: pointer; margin-right: 15px; color: #333; }
 
-        /* --- MOBILE DRAWER STYLES --- */
+        /* --- MOBILE DRAWER --- */
         .mobile-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1001; opacity: 0; visibility: hidden; transition: 0.3s; }
         .mobile-drawer { position: fixed; top: 0; left: 0; width: 280px; height: 100%; background: #fff; z-index: 1002; transform: translateX(-100%); transition: 0.4s cubic-bezier(0.77, 0, 0.175, 1); display: flex; flex-direction: column; padding-top: 60px; box-shadow: 5px 0 15px rgba(0,0,0,0.1); }
         
@@ -65,7 +81,7 @@
         .drawer-link { display: block; padding: 15px 30px; border-bottom: 1px solid #f5f5f5; font-size: 1rem; color: #333; font-weight: 500; text-decoration: none; }
         .drawer-link:hover { background: #fcfcfc; color: var(--primary); }
 
-        /* --- SLIDESHOW --- */
+        /* --- HERO --- */
         .hero { height: 600px; position: relative; overflow: hidden; }
         .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 1.5s ease-in-out; background-size: cover; background-position: center; transform: scale(1.1); animation: zoomEffect 20s infinite alternate; }
         .slide.active { opacity: 1; }
@@ -76,11 +92,18 @@
         .hero-content h1 { font-size: 4.5rem; text-shadow: 2px 2px 10px rgba(0,0,0,0.5); margin-bottom: 20px; animation: fadeInUp 1s ease 0.5s forwards; opacity: 0; transform: translateY(30px); }
         .hero-content p { font-size: 1.5rem; margin-bottom: 30px; animation: fadeInUp 1s ease 0.8s forwards; opacity: 0; transform: translateY(30px); }
         .hero-btn { animation: fadeInUp 1s ease 1.1s forwards; opacity: 0; transform: translateY(30px); }
-        
         @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
 
         /* --- PRODUCT CARDS --- */
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
+        .product-grid { 
+            display: grid; 
+            /* FORCE 4 COLUMNS ON DESKTOP */
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 25px; 
+            max-width: 1400px; /* Increased max width to fit 4 items comfortably */
+            margin: 0 auto; 
+        }
+        
         .product-card { background: white; border: 1px solid #eaeaea; transition: 0.4s; overflow: hidden; position: relative; border-radius: 6px; }
         .product-card:hover { box-shadow: 0 15px 30px rgba(0,0,0,0.1); transform: translateY(-5px); }
         
@@ -101,8 +124,8 @@
         .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
         .btn-outline:hover { background: var(--primary); color: white; }
 
-        /* --- CUSTOM CAKE SECTION --- */
-        .custom-banner { background: url('https://source.unsplash.com/1600x600/?baker,flour') center/cover fixed; position: relative; padding: 120px 20px; text-align: center; }
+        /* --- CUSTOM BANNER --- */
+        .custom-banner { background: url('https://images.unsplash.com/photo-1556910103-1c02745a30bf?auto=format&fit=crop&w=1600&q=80') center/cover fixed; position: relative; padding: 120px 20px; text-align: center; }
         .custom-banner::before { content: ''; position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); }
         .custom-content { position: relative; z-index: 2; background: rgba(255,255,255,0.95); display: inline-block; padding: 60px; max-width: 700px; border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
 
@@ -127,62 +150,68 @@
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
         .modal-box { background: white; width: 900px; max-width: 90%; display: flex; box-shadow: 0 20px 50px rgba(0,0,0,0.5); animation: zoomIn 0.3s ease; position: relative; border-radius: 8px; overflow: hidden; }
         @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .modal-img { flex: 1; }
-        .modal-img img { width: 100%; height: 100%; object-fit: cover; }
-        .modal-details { flex: 1; padding: 40px; display: flex; flex-direction: column; justify-content: center; }
-        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 2rem; cursor: pointer; color: #555; z-index: 10; background: rgba(255,255,255,0.8); border-radius: 50%; width: 40px; height: 40px; text-align: center; line-height: 40px; }
         
-        /* --- MEDIA QUERIES (Mobile Fixes) --- */
-        @media (max-width: 900px) {
-            /* Navbar */
-            .nav-links { display: none; }
-            .hamburger { display: block; }
-            header { padding: 15px 20px; }
-            .logo img { height: 50px; }
+        .modal-img { flex: 1; background: #f0f0f0; }
+        .modal-img img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .modal-details { flex: 1; padding: 30px 40px; display: flex; flex-direction: column; justify-content: center; overflow-y: auto; max-height: 90vh; }
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 2rem; cursor: pointer; color: #555; z-index: 10; background: rgba(255,255,255,0.8); border-radius: 50%; width: 40px; height: 40px; text-align: center; line-height: 40px; }
 
-            /* Fonts & Spacing */
+        .modal-label { font-weight: 600; display: block; margin-bottom: 8px; font-size: 0.9rem; color: #555; }
+        
+        .custom-weight-inputs { display: flex; gap: 15px; align-items: center; margin-bottom: 15px; }
+        .input-group { display: flex; align-items: center; gap: 5px; }
+        .input-group input { width: 70px; padding: 8px; border: 1px solid #ddd; border-radius: 4px; text-align: center; }
+        .input-group span { font-weight: 500; font-size: 0.9rem; color: #666; }
+
+        .qty-wrapper { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+        .qty-input { padding: 10px; width: 80px; text-align: center; border: 1px solid #ddd; border-radius: 4px; font-size: 1rem; }
+
+        .modal-actions { display: flex; gap: 10px; align-items: center; margin-top: 10px; }
+        .wishlist-btn { background: white; border: 1px solid #ddd; width: 50px; height: 46px; display: flex; align-items: center; justify-content: center; border-radius: 4px; cursor: pointer; transition: 0.3s; }
+        .wishlist-btn i { color: transparent; -webkit-text-stroke: 1.5px black; font-size: 1.4rem; transition: 0.3s; }
+        .wishlist-btn.active i { color: var(--heart-red); -webkit-text-stroke: 0; }
+        
+        /* --- MOBILE QUERIES --- */
+        @media (max-width: 900px) {
+            .nav-links { display: none; } 
+            .hamburger { display: block; position: absolute; left: 0; }
+            header { padding: 15px 20px; }
+            
+            .navbar { justify-content: center; } 
+            .logo { margin: 0 auto; }
+            .logo img { height: 50px; }
+            .nav-icons { position: absolute; right: 0; }
+
             .hero-content h1 { font-size: 2.8rem; }
             .hero-content p { font-size: 1.2rem; }
             .section-header h2 { font-size: 2rem; }
             .section-padding { padding: 50px 15px; }
 
-            /* Grid Layouts - Force 2 Columns on Mobile */
-            .product-grid { 
-                grid-template-columns: repeat(2, 1fr); 
-                gap: 15px; 
-            }
+            /* Mobile Grid: 2 Columns */
+            .product-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+            
             .card-img-box { height: 160px; }
             .card-info { padding: 15px; }
             .card-info h3 { font-size: 1rem; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
             .card-info .price { font-size: 1rem; }
             .btn-add-cart { padding: 8px; font-size: 0.8rem; }
-            
-            /* Quick view hover doesn't work well on touch, hide it */
             .quick-view { display: none; }
 
-            /* Gallery */
             .gallery-wrapper { grid-template-columns: repeat(2, 1fr); }
-            
-            /* Contact */
             .contact-grid { grid-template-columns: 1fr; }
             .contact-map iframe { height: 300px; min-height: auto; }
             .contact-info { padding: 40px 20px; }
 
-            /* Custom Banner */
-            .custom-content { padding: 30px; width: 90%; }
-
-            /* Modal */
             .modal-box { flex-direction: column; height: auto; max-height: 90vh; overflow-y: auto; }
             .modal-img { height: 250px; flex: none; }
             .modal-details { padding: 20px; }
         }
 
-        /* Small Phones */
         @media (max-width: 400px) {
             .hero-content h1 { font-size: 2rem; }
             .logo img { height: 40px; }
         }
-
     </style>
 </head>
 <body id="body-lock">
@@ -201,22 +230,21 @@
 
     <header class="bg-white">
         <div class="navbar">
-            <div style="display:flex; align-items:center;">
-                <div class="hamburger" onclick="toggleDrawer()">
-                    <i class="fas fa-bars"></i>
-                </div>
-                <div class="logo">
-                    <a href="index.html"><img src="logo.png" alt="Soft Cake Logo"></a>
-                </div>
+            <div class="hamburger" onclick="toggleDrawer()">
+                <i class="fas fa-bars"></i>
+            </div>
+
+            <div class="logo">
+                <a href="index.html"><img src="logo.png" alt="Soft Cake Logo"></a>
             </div>
 
             <nav class="nav-links">
                 <a href="index.html">Home</a>
-                <a href="shop.html">All Products</a>
+                <a href="shop.html">Shop</a>
                 <a href="#about">About</a>
-                <a href="#gallery">Gallery</a>
-                <a href="#contact">Contact Us</a>
+                <a href="#contact">Contact</a>
             </nav>
+
             <div class="nav-icons">
                 <a href="login.html"><i class="fas fa-user"></i></a>
                 <a href="wishlist.html"><i class="fas fa-heart"></i></a>
@@ -227,9 +255,9 @@
 
     <section class="hero">
         <div class="hero-overlay"></div>
-        <div class="slide active" style="background-image: url('https://source.unsplash.com/1920x1080/?cake,chocolate');"></div>
-        <div class="slide" style="background-image: url('https://source.unsplash.com/1920x1080/?bakery,pastry');"></div>
-        <div class="slide" style="background-image: url('https://source.unsplash.com/1920x1080/?dessert,sweets');"></div>
+        <div class="slide active" style="background-image: url('https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=1920&q=80');"></div>
+        <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1557308536-ee471ef2c39a?auto=format&fit=crop&w=1920&q=80');"></div>
+        <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1621303837174-89787a7d4729?auto=format&fit=crop&w=1920&q=80');"></div>
         
         <div class="hero-content">
             <h1>Experience the Softness</h1>
@@ -240,24 +268,35 @@
         </div>
     </section>
 
-    <section class="section-padding bg-white" id="most-sold">
+    <section class="section-padding bg-white" id="most-sold-section">
         <div class="section-header" data-aos="fade-up">
             <h2>Most Sold Items</h2>
             <div class="separator"></div>
             <p>Our customers' absolute favorites</p>
         </div>
-        <div class="product-grid" id="most-sold-container">
-            </div>
+        <div class="product-grid" id="most-sold-container"></div>
         <div class="see-more-container" data-aos="fade-up">
             <a href="shop.html" class="btn btn-outline">See All Popular</a>
         </div>
     </section>
 
-    <section class="section-padding bg-brown">
+    <section class="section-padding bg-brown" id="savoury-section">
+        <div class="section-header" data-aos="fade-up">
+            <h2>Savoury Delights</h2>
+            <div class="separator"></div>
+            <p>Fresh Sandwiches, Rolls & Patties</p>
+        </div>
+        <div class="product-grid" id="savoury-container"></div>
+        <div class="see-more-container" data-aos="fade-up">
+            <a href="shop.html?cat=savoury" class="btn btn-outline">View All Savoury</a>
+        </div>
+    </section>
+
+    <section class="section-padding bg-white" id="cakes-section">
         <div class="section-header" data-aos="fade-up">
             <h2>Premium Cakes</h2>
             <div class="separator"></div>
-            <p>Rich, creamy, and delightful (Price per 500g)</p>
+            <p>Our Signature Cakes (Price per 1kg)</p>
         </div>
         <div class="product-grid" id="cakes-container"></div>
         <div class="see-more-container" data-aos="fade-up">
@@ -265,27 +304,15 @@
         </div>
     </section>
 
-    <section class="section-padding bg-white">
-        <div class="section-header" data-aos="fade-up">
-            <h2>Savoury Delights</h2>
-            <div class="separator"></div>
-            <p>Perfect snacks for your tea time</p>
-        </div>
-        <div class="product-grid" id="savoury-container"></div>
-        <div class="see-more-container" data-aos="fade-up">
-            <a href="shop.html?cat=savoury" class="btn btn-outline">View All Savouries</a>
-        </div>
-    </section>
-
-    <section class="section-padding bg-brown">
+    <section class="section-padding bg-brown" id="sweets-section">
         <div class="section-header" data-aos="fade-up">
             <h2>Sweets & Treats</h2>
             <div class="separator"></div>
-            <p>Indulge in our sugary creations</p>
+            <p>Éclairs, Cupcakes & More</p>
         </div>
         <div class="product-grid" id="sweets-container"></div>
         <div class="see-more-container" data-aos="fade-up">
-            <a href="shop.html?cat=sweets" class="btn btn-outline">View All Sweets</a>
+            <a href="shop.html?cat=sweets" class="btn btn-outline">View Treats</a>
         </div>
     </section>
 
@@ -304,7 +331,7 @@
             <div class="separator"></div>
         </div>
         <div style="max-width: 800px; margin: 0 auto; text-align: center; line-height: 1.8; color: #555;" data-aos="fade-up">
-            <p>Established in 2025, <strong>Soft Cake</strong> began with a simple mission: to provide the softest, freshest, and most delicious baked goods in Sri Lanka. We use only the finest ingredients—premium butter, fresh cream, and high-quality flour. Our chefs are artists who believe that a cake should look as good as it tastes.</p>
+            <p>Established in 2025, <strong>Soft Cake</strong> began with a simple mission: to provide the softest, freshest, and most delicious baked goods in Sri Lanka. We use only the finest ingredients—premium butter, fresh cream, and high-quality flour.</p>
         </div>
     </section>
 
@@ -314,10 +341,10 @@
             <div class="separator"></div>
         </div>
         <div class="gallery-wrapper">
-            <div class="gallery-item" data-aos="zoom-in"><img src="https://source.unsplash.com/600x600/?cupcake" alt=""></div>
-            <div class="gallery-item" data-aos="zoom-in" data-aos-delay="100"><img src="https://source.unsplash.com/600x600/?weddingcake" alt=""></div>
-            <div class="gallery-item" data-aos="zoom-in" data-aos-delay="200"><img src="https://source.unsplash.com/600x600/?croissant" alt=""></div>
-            <div class="gallery-item" data-aos="zoom-in" data-aos-delay="300"><img src="https://source.unsplash.com/600x600/?donuts" alt=""></div>
+            <div class="gallery-item" data-aos="zoom-in"><img src="https://images.unsplash.com/photo-1563729784474-d779b95f8bc2?auto=format&fit=crop&w=600&q=80" alt=""></div>
+            <div class="gallery-item" data-aos="zoom-in" data-aos-delay="100"><img src="https://images.unsplash.com/photo-1550617931-e17a7b70dce2?auto=format&fit=crop&w=600&q=80" alt=""></div>
+            <div class="gallery-item" data-aos="zoom-in" data-aos-delay="200"><img src="https://images.unsplash.com/photo-1579306194872-64d3b7bac4c2?auto=format&fit=crop&w=600&q=80" alt=""></div>
+            <div class="gallery-item" data-aos="zoom-in" data-aos-delay="300"><img src="https://images.unsplash.com/photo-1621303837174-89787a7d4729?auto=format&fit=crop&w=600&q=80" alt=""></div>
         </div>
     </section>
 
@@ -346,25 +373,50 @@
     <div id="productModal" class="modal">
         <div class="modal-box">
             <span class="close-modal" onclick="closeModal()">×</span>
+            
             <div class="modal-img">
                 <img id="m-img" src="" alt="">
             </div>
+            
             <div class="modal-details">
-                <h2 id="m-name" style="margin-bottom: 10px;">Product Name</h2>
-                <div class="separator" style="margin: 10px 0;"></div>
-                <p id="m-desc" style="color:#666; margin-bottom: 20px;">Description goes here.</p>
-                <h3 id="m-price" style="color: var(--primary); font-size: 2rem; margin-bottom: 20px;">Rs. 200.00</h3>
+                <h2 id="m-name" style="margin-bottom: 5px;">Product Name</h2>
+                <div class="separator" style="margin: 10px 0; width: 40px;"></div>
+                <p id="m-desc" style="color:#666; margin-bottom: 20px; font-size: 0.9rem;">Description goes here.</p>
                 
-                <label style="font-weight:bold; display:block; margin-bottom:5px;">Size / Option:</label>
-                <select id="m-size" style="width: 100%; padding: 10px; border: 1px solid #ddd; margin-bottom: 15px;">
-                    <option value="Std">Standard</option>
-                </select>
+                <h3 id="m-price" style="color: var(--primary); font-size: 1.8rem; margin-bottom: 20px;">Rs. 200.00</h3>
+                
+                <div id="cake-options" style="display:none;">
+                    <label class="modal-label">Enter Custom Weight:</label>
+                    <div class="custom-weight-inputs">
+                        <div class="input-group">
+                            <input type="number" id="w-kg" value="1" min="0" onchange="calculateTotal()"> 
+                            <span>kg</span>
+                        </div>
+                        <div class="input-group">
+                            <input type="number" id="w-g" value="0" min="0" step="50" onchange="calculateTotal()"> 
+                            <span>g</span>
+                        </div>
+                    </div>
+                </div>
 
-                <label style="font-weight:bold; display:block; margin-bottom:5px;">Quantity:</label>
-                <input type="number" id="m-qty" value="1" min="1" style="width: 100%; padding: 10px; border: 1px solid #ddd; margin-bottom: 20px;">
+                <label class="modal-label">Quantity:</label>
+                <div class="qty-wrapper">
+                    <input type="number" id="m-qty" value="1" min="1" class="qty-input" onchange="calculateTotal()">
+                </div>
 
-                <button class="btn" onclick="addToCartModal()" style="width:100%;">Add to Cart</button>
-                <button class="btn" onclick="addToWishlistModal()" style="width:100%; background:#333; margin-top:10px;">Add to Wishlist</button>
+                <div style="margin-top: auto; border-top: 1px solid #eee; padding-top: 20px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom: 10px; font-weight:bold;">
+                        <span>Total:</span>
+                        <span id="m-total-price">Rs. 0.00</span>
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button class="btn" onclick="addToCartModal()" style="flex:1;">Add to Cart</button>
+                        <button class="wishlist-btn" id="m-wishlist-btn" onclick="toggleWishlist()">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -373,40 +425,56 @@
     <script>
         AOS.init({ duration: 1000, once: true });
 
-        // --- MOBILE DRAWER LOGIC (New Addition) ---
+        // --- MOBILE DRAWER LOGIC ---
         function toggleDrawer() {
             const drawer = document.getElementById('mobileDrawer');
             const overlay = document.getElementById('mobileOverlay');
             const body = document.getElementById('body-lock');
             
-            // Toggle Logic
             if(drawer.parentElement.classList.contains('drawer-active')) {
                 drawer.parentElement.classList.remove('drawer-active');
-                body.style.overflow = 'auto'; // Enable scrolling
+                body.style.overflow = 'auto';
             } else {
                 drawer.parentElement.classList.add('drawer-active');
-                body.style.overflow = 'hidden'; // Disable background scrolling
+                body.style.overflow = 'hidden';
             }
         }
 
-        // --- DATA & LOGIC ---
-        const defaultData = [
-            { id: 1, name: "Fish Roll", price: 210, cat: "savoury", img: "https://images.unsplash.com/photo-1626804475297-411d8c6b71f5?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80", desc: "Crispy breaded roll filled with spicy fish and potato mix." },
-            { id: 2, name: "Chocolate Fudge", price: 2500, cat: "cakes", img: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80", desc: "Decadent dark chocolate layers with rich ganache." },
-            { id: 3, name: "Chicken Bun", price: 150, cat: "savoury", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80", desc: "Soft baked bun stuffed with savoury chicken curry." },
-            { id: 4, name: "Butter Cake", price: 1800, cat: "cakes", img: "https://images.unsplash.com/photo-1519340333755-56e9c1d04579?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80", desc: "Traditional Sri Lankan butter cake, light and fluffy." },
-            { id: 5, name: "Glazed Donut", price: 200, cat: "sweets", img: "https://images.unsplash.com/photo-1551024601-5629f9758f2f?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80", desc: "Classic ring donut with a sweet sugar glaze." },
-            { id: 6, name: "Chocolate Brownie", price: 300, cat: "sweets", img: "https://images.unsplash.com/photo-1606313564200-e75d5e30476d?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80", desc: "Fudgy, chewy chocolate brownie with walnut toppings." },
-            { id: 7, name: "Veg Roti", price: 100, cat: "savoury", img: "https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80", desc: "Spicy vegetable filling wrapped in a flatbread." },
-            { id: 8, name: "Red Velvet", price: 3000, cat: "cakes", img: "https://images.unsplash.com/photo-1586788680434-30d32443d465?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80", desc: "Crimson-colored chocolate layer cake with cream cheese icing." }
+        // --- DATA ---
+        const softCakeData = [
+            // Sandwiches
+            { id: 101, name: "Egg Sandwich", price: 100, cat: "savoury", img: "https://images.unsplash.com/photo-1553909489-cd47e3b4430f?auto=format&fit=crop&w=600&q=80", desc: "Classic creamy egg filling." },
+            { id: 102, name: "Fish Sandwich", price: 100, cat: "savoury", img: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=600&q=80", desc: "Spicy tuna fish mix." },
+            { id: 103, name: "Chicken Sandwich", price: 150, cat: "savoury", img: "https://images.unsplash.com/photo-1509722747041-616f39b57569?auto=format&fit=crop&w=600&q=80", desc: "Roast chicken spread." },
+            { id: 104, name: "Veg Sandwich", price: 100, cat: "savoury", img: "https://images.unsplash.com/photo-1540713475856-3a3a28eb0ef0?auto=format&fit=crop&w=600&q=80", desc: "Fresh garden vegetables." },
+            
+            // Rolls
+            { id: 201, name: "Egg Roll", price: 150, cat: "savoury", img: "https://images.unsplash.com/photo-1606757389656-78c66c3a2f8b?auto=format&fit=crop&w=600&q=80", desc: "Chinese style egg roll." },
+            { id: 202, name: "Fish Roll", price: 110, cat: "savoury", img: "https://images.unsplash.com/photo-1626804475297-411d8c6b71f5?auto=format&fit=crop&w=600&q=80", desc: "Crispy fish roll." },
+            { id: 203, name: "Chicken Roll", price: 130, cat: "savoury", img: "https://images.unsplash.com/photo-1541529086526-db283c563270?auto=format&fit=crop&w=600&q=80", desc: "Savoury chicken filling." },
+            { id: 204, name: "Veg Roll", price: 110, cat: "savoury", img: "https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?auto=format&fit=crop&w=600&q=80", desc: "Spicy vegetable mix." },
+
+            // Patties
+            { id: 301, name: "Fish Patty", price: 110, cat: "savoury", img: "https://images.unsplash.com/photo-1626804475317-a5509a25032a?auto=format&fit=crop&w=600&q=80", desc: "Flaky pastry with fish." },
+            { id: 302, name: "Chicken Patty", price: 140, cat: "savoury", img: "https://images.unsplash.com/photo-1579306194872-64d3b7bac4c2?auto=format&fit=crop&w=600&q=80", desc: "Golden crust chicken patty." },
+            { id: 303, name: "Veg Patty", price: 110, cat: "savoury", img: "https://images.unsplash.com/photo-1626804475297-411d8c6b71f5?auto=format&fit=crop&w=600&q=80", desc: "Delicious potato & veg." },
+
+            // Sweets & Treats
+            { id: 401, name: "Chocolate Éclair", price: 140, cat: "sweets", img: "https://images.unsplash.com/photo-1612203985729-70726954388c?auto=format&fit=crop&w=600&q=80", desc: "Choux pastry with cream." },
+            { id: 402, name: "Mini Pizza", price: 200, cat: "savoury", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80", desc: "Bite sized cheesy delight." },
+            { id: 403, name: "Butter Cupcake", price: 130, cat: "sweets", img: "https://images.unsplash.com/photo-1519340333755-56e9c1d04579?auto=format&fit=crop&w=600&q=80", desc: "Soft butter cupcake." },
+            { id: 404, name: "Choc Cupcake", price: 150, cat: "sweets", img: "https://images.unsplash.com/photo-1550617931-e17a7b70dce2?auto=format&fit=crop&w=600&q=80", desc: "Rich chocolate frosted." },
+
+            // Cakes (Prices for 1kg now)
+            { id: 501, name: "Butter Cake", price: 1300, cat: "cakes", img: "https://images.unsplash.com/photo-1563729784474-d779b95f8bc2?auto=format&fit=crop&w=600&q=80", desc: "Premium butter cake." },
+            { id: 502, name: "Chocolate Cake", price: 1700, cat: "cakes", img: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80", desc: "Dark fudge chocolate." },
+            { id: 503, name: "Ribbon Cake", price: 1500, cat: "cakes", img: "https://images.unsplash.com/photo-1586788680434-30d32443d465?auto=format&fit=crop&w=600&q=80", desc: "Colorful ribbon layers." }
         ];
 
-        let products = JSON.parse(localStorage.getItem('softCakeProducts'));
-        if (!products || products.length === 0) {
-            products = defaultData;
-            localStorage.setItem('softCakeProducts', JSON.stringify(products));
-        }
+        let products = softCakeData;
+        localStorage.setItem('softCakeProducts', JSON.stringify(products));
 
+        // --- RENDER CARDS ---
         function createCard(p, delay) {
             return `
                 <div class="product-card" data-aos="fade-up" data-aos-delay="${delay}">
@@ -417,7 +485,7 @@
                     <div class="card-info">
                         <h3>${p.name}</h3>
                         <span class="price">Rs. ${p.price}.00</span>
-                        <button class="btn-add-cart" onclick="quickAdd(${p.id})">Add to Cart</button>
+                        <button class="btn-add-cart" onclick="openModal(${p.id})">Add to Cart</button>
                     </div>
                 </div>
             `;
@@ -425,18 +493,34 @@
 
         function render(cat, id) {
             const container = document.getElementById(id);
+            // Limit to 4 items strictly as requested
             const items = products.filter(p => p.cat === cat).slice(0, 4);
             let delay = 0;
             container.innerHTML = items.map(p => {
-                delay += 100;
+                delay += 50;
                 return createCard(p, delay);
             }).join('');
         }
 
-        render('cakes', 'most-sold-container'); // Demo logic
+        // Render sections
         render('cakes', 'cakes-container');
         render('savoury', 'savoury-container');
         render('sweets', 'sweets-container');
+
+        // Render Most Sold (Strictly 4 popular items)
+        function renderMostSold() {
+            const container = document.getElementById('most-sold-container');
+            const mostSoldIds = [202, 502, 103, 401];
+            const items = products.filter(p => mostSoldIds.includes(p.id));
+            
+            let delay = 0;
+            container.innerHTML = items.map(p => {
+                delay += 50;
+                return createCard(p, delay);
+            }).join('');
+        }
+        renderMostSold();
+
 
         // Slideshow
         let sIdx = 0;
@@ -447,51 +531,106 @@
             slides[sIdx].classList.add('active');
         }, 5000);
 
-        // Modal
+        // --- MODAL LOGIC ---
         let curProd = null;
+
         function openModal(id) {
             curProd = products.find(p => p.id === id);
-            document.getElementById('m-name').innerText = curProd.name;
-            document.getElementById('m-desc').innerText = curProd.desc || 'Tasty delight.';
-            document.getElementById('m-price').innerText = 'Rs. ' + curProd.price + '.00';
-            document.getElementById('m-img').src = curProd.img;
             
-            const sel = document.getElementById('m-size');
-            if(curProd.cat === 'cakes') sel.innerHTML = `<option value="500g">500g</option><option value="1kg">1kg (+ Rs.${curProd.price})</option>`;
-            else sel.innerHTML = `<option value="Std">Standard</option>`;
+            // Populate Data
+            document.getElementById('m-name').innerText = curProd.name;
+            document.getElementById('m-desc').innerText = curProd.desc || 'Freshly baked goodness.';
+            document.getElementById('m-img').src = curProd.img;
+            document.getElementById('m-qty').value = 1;
+            
+            // Wishlist Reset
+            const wishBtn = document.getElementById('m-wishlist-btn');
+            wishBtn.classList.remove('active');
+            
+            // Cake Logic Setup
+            const cakeOptions = document.getElementById('cake-options');
+            if(curProd.cat === 'cakes') {
+                cakeOptions.style.display = 'block';
+                // Default to 1kg 0g
+                document.getElementById('w-kg').value = 1;
+                document.getElementById('w-g').value = 0;
+                document.getElementById('m-price').innerText = 'Rs. ' + curProd.price + '.00 (1kg Base)';
+            } else {
+                cakeOptions.style.display = 'none';
+                document.getElementById('m-price').innerText = 'Rs. ' + curProd.price + '.00';
+            }
 
+            calculateTotal();
             document.getElementById('productModal').style.display = 'flex';
         }
+
         function closeModal() { document.getElementById('productModal').style.display = 'none'; }
-        
-        function quickAdd(id) {
-            const p = products.find(i => i.id === id);
-            add(p, 1, "Std");
+
+        function calculateTotal() {
+            const qty = parseInt(document.getElementById('m-qty').value);
+            if(qty < 1) { document.getElementById('m-qty').value = 1; return; }
+
+            let unitPrice = curProd.price;
+
+            // Cake Dynamic Weight Calculation
+            if(curProd.cat === 'cakes') {
+                const kg = parseInt(document.getElementById('w-kg').value) || 0;
+                const g = parseInt(document.getElementById('w-g').value) || 0;
+                
+                let totalGrams = (kg * 1000) + g;
+                
+                // If user enters 0, fallback to 1kg for calc safety
+                if(totalGrams <= 0) totalGrams = 1000;
+
+                // Base price is for 1000g (1kg)
+                const pricePerGram = curProd.price / 1000;
+                unitPrice = totalGrams * pricePerGram;
+                
+                // Update unit price display
+                document.getElementById('m-price').innerText = 'Rs. ' + unitPrice.toLocaleString() + '.00';
+            }
+
+            const total = unitPrice * qty;
+            document.getElementById('m-total-price').innerText = 'Rs. ' + total.toLocaleString() + '.00';
         }
-        
+
+        function toggleWishlist() {
+            const btn = document.getElementById('m-wishlist-btn');
+            btn.classList.toggle('active');
+        }
+
         function addToCartModal() {
             const qty = parseInt(document.getElementById('m-qty').value);
-            const size = document.getElementById('m-size').value;
-            add(curProd, qty, size);
-            closeModal();
-        }
+            let sizeLabel = "Standard";
+            let unitPrice = curProd.price;
 
-        function add(item, qty, size) {
+            if(curProd.cat === 'cakes') {
+                const kg = parseInt(document.getElementById('w-kg').value) || 0;
+                const g = parseInt(document.getElementById('w-g').value) || 0;
+                let totalGrams = (kg * 1000) + g;
+                if(totalGrams <= 0) totalGrams = 1000;
+                
+                sizeLabel = (totalGrams >= 1000) 
+                    ? (totalGrams/1000) + "kg" 
+                    : totalGrams + "g";
+                
+                // Base price 1kg = 1000g
+                const pricePerGram = curProd.price / 1000;
+                unitPrice = totalGrams * pricePerGram;
+            }
+
             let cart = JSON.parse(localStorage.getItem('softCakeCart')) || [];
-            cart.push({ ...item, qty, size });
+            cart.push({ 
+                ...curProd, 
+                qty, 
+                size: sizeLabel, 
+                total: (unitPrice * qty) 
+            });
             localStorage.setItem('softCakeCart', JSON.stringify(cart));
+            
             updateBadge();
-            alert("Added to Cart!");
-        }
-
-        function addToWishlistModal() {
-            let list = JSON.parse(localStorage.getItem('softCakeWish')) || [];
-            if(!list.find(i => i.id === curProd.id)) {
-                list.push(curProd);
-                localStorage.setItem('softCakeWish', JSON.stringify(list));
-                alert("Added to Wishlist");
-            } else alert("Already in Wishlist");
             closeModal();
+            alert("Added to Cart!");
         }
 
         function updateBadge() {
