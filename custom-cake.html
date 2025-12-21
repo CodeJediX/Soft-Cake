@@ -3,534 +3,423 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shopping Cart - Soft Cake</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-    
+    <title>Custom Cake - Soft Cake</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
     <style>
+        /* --- GLOBAL VARIABLES (Matched to Home Page) --- */
         :root {
             --primary: #c69c6d;
-            --primary-dark: #b08968;
-            --bg-light: #f5efe6;
-            --text-dark: #2f2e2e;
+            --primary-dark: #a67c52;
+            --section-brown: #f5efe6;
             --white: #ffffff;
-            --danger: #e63946;
-            --success: #25D366;
+            --text-dark: #2c2c2c;
+            --text-light: #666666;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
-        
-        body { 
-            font-family: 'Montserrat', sans-serif; 
-            background-color: var(--bg-light); 
-            color: var(--text-dark);
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; outline: none; }
+        body { color: var(--text-dark); overflow-x: hidden; background-color: var(--section-brown); }
+
+        /* --- TYPOGRAPHY --- */
+        h1, h2, h3 { font-family: 'Playfair Display', serif; }
 
         /* --- HEADER --- */
-        header {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 15px 40px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-            display: flex;
-            align-items: center;
-            position: sticky; top: 0; z-index: 100;
-            height: 90px;
+        header { 
+            background: var(--white); 
+            padding: 15px 40px; 
+            position: sticky; top: 0; z-index: 1000; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+        }
+        
+        .navbar { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            max-width: 1400px; 
+            margin: 0 auto; 
+            position: relative; 
         }
 
         /* Desktop: Logo Left */
         .logo { margin-right: auto; z-index: 2; }
-        .logo a { display: block; }
         .logo img { height: 75px; transition: 0.3s; }
-
-        /* Desktop: Nav Center */
-        .nav-center {
+        
+        /* Desktop: Nav Center (Absolute) */
+        .nav-links {
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
+            display: flex;
             z-index: 1;
         }
-        .nav-link { 
-            color: var(--text-dark); 
-            text-decoration: none; 
-            font-weight: 500; 
-            font-size: 1rem;
-            transition: 0.3s;
-        }
-        .nav-link:hover { color: var(--primary); }
-
-        /* --- MOBILE HEADER STYLES --- */
-        @media (max-width: 900px) {
-            header { 
-                padding: 15px 20px; 
-                justify-content: space-between; 
-            }
-
-            /* Mobile: Logo Absolute Center */
-            .logo { 
-                position: absolute; 
-                left: 50%; 
-                transform: translateX(-50%); 
-                margin: 0;
-            }
-            .logo img { height: 50px; }
-
-            /* Mobile: Nav stays relative (Left side back button) */
-            .nav-center {
-                position: static;
-                transform: none;
-            }
-            .nav-link span { display: none; } 
-            .nav-link i { font-size: 1.2rem; }
-        }
-
-        @media (min-width: 901px) {
-            .nav-link span { display: inline; }
-        }
-
-        /* --- LAYOUT --- */
-        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+        .nav-links a { margin: 0 15px; text-decoration: none; color: var(--text-dark); font-weight: 500; text-transform: uppercase; font-size: 0.9rem; transition: 0.3s; position: relative; }
+        .nav-links a::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -5px; left: 0; background-color: var(--primary); transition: 0.3s; }
+        .nav-links a:hover::after { width: 100%; }
         
-        .page-header { text-align: center; margin-bottom: 40px; animation: fadeIn 0.8s; }
-        .page-header h1 { font-family: 'Playfair Display', serif; font-size: 2.5rem; }
+        /* Desktop: Icons Right */
+        .nav-icons { display: flex; align-items: center; margin-left: auto; z-index: 2; }
+        .nav-icons a { margin-left: 20px; color: var(--text-dark); font-size: 1.2rem; position: relative; transition: 0.3s; }
+        .nav-icons a:hover { color: var(--primary); }
+        .cart-badge { position: absolute; top: -8px; right: -10px; background: var(--primary); color: white; font-size: 0.7rem; padding: 2px 6px; border-radius: 50%; }
 
-        .cart-layout {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 40px;
-            align-items: start;
-        }
+        .hamburger { display: none; font-size: 1.5rem; cursor: pointer; margin-right: 15px; color: #333; }
 
-        /* --- LEFT: CART ITEMS & ADDONS --- */
-        .cart-left-section { display: flex; flex-direction: column; gap: 40px; }
+        /* --- MOBILE DRAWER --- */
+        .mobile-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1001; opacity: 0; visibility: hidden; transition: 0.3s; }
+        .mobile-drawer { position: fixed; top: 0; left: 0; width: 280px; height: 100%; background: #fff; z-index: 1002; transform: translateX(-100%); transition: 0.4s cubic-bezier(0.77, 0, 0.175, 1); display: flex; flex-direction: column; padding-top: 60px; box-shadow: 5px 0 15px rgba(0,0,0,0.1); }
         
-        .cart-items { display: flex; flex-direction: column; gap: 20px; }
+        .drawer-active .mobile-overlay { opacity: 1; visibility: visible; }
+        .drawer-active .mobile-drawer { transform: translateX(0); }
+        
+        .drawer-close { position: absolute; top: 20px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #555; }
+        .drawer-link { display: block; padding: 15px 30px; border-bottom: 1px solid #f5f5f5; font-size: 1rem; color: #333; font-weight: 500; text-decoration: none; }
+        .drawer-link:hover { background: #fcfcfc; color: var(--primary); }
 
-        .cart-card {
+        /* --- CUSTOM FORM LAYOUT --- */
+        .form-container {
+            width: 1000px;
+            max-width: 90%;
             background: var(--white);
-            border-radius: 15px;
-            padding: 20px;
+            margin: 60px auto;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.05);
+            display: flex;
+            overflow: hidden;
+            min-height: 600px;
+        }
+
+        /* Visual Side (Left) */
+        .visual-side {
+            flex: 1;
+            background: url('https://images.unsplash.com/photo-1562772379-0872a4d944d3?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80') center/cover;
+            position: relative;
             display: flex;
             align-items: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+            justify-content: center;
+            padding: 40px;
+            color: var(--white);
+        }
+        .visual-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(198, 156, 109, 0.9); /* Primary color overlay */
+        }
+        .visual-content { position: relative; z-index: 2; text-align: center; }
+        .visual-content h2 { font-size: 3rem; margin-bottom: 20px; text-shadow: 2px 2px 10px rgba(0,0,0,0.2); }
+        .visual-content p { font-size: 1.1rem; line-height: 1.6; opacity: 0.95; }
+
+        /* Form Side (Right) */
+        .form-side { flex: 1.2; padding: 50px; position: relative; }
+        
+        .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .header-row h3 { color: var(--text-dark); font-size: 1.8rem; }
+        .separator { width: 60px; height: 3px; background: var(--primary); margin-top: 5px; }
+
+        /* Inputs */
+        .input-group { position: relative; margin-bottom: 25px; }
+        
+        .input-group input, 
+        .input-group select, 
+        .input-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            background: transparent;
             transition: 0.3s;
-            animation: slideUp 0.5s ease forwards;
+            appearance: none;
         }
         
-        @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+        .input-group textarea { resize: none; height: 100px; }
         
-        .cart-card:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
-
-        .item-img { width: 80px; height: 80px; border-radius: 10px; overflow: hidden; margin-right: 20px; flex-shrink: 0; }
-        .item-img img { width: 100%; height: 100%; object-fit: cover; }
-        .item-img.icon-only { background: #fdfdfd; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--primary); }
-
-        .item-details { flex: 1; }
-        .item-details h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; margin-bottom: 5px; }
-        .item-details .meta { font-size: 0.85rem; color: #888; }
-        
-        .item-qty { display: flex; align-items: center; gap: 10px; margin: 0 20px; }
-        .qty-btn {
-            width: 30px; height: 30px; border-radius: 50%; border: 1px solid #ddd;
-            background: white; cursor: pointer; display: flex; justify-content: center; align-items: center;
-            transition: 0.2s;
+        /* Floating Label Logic */
+        .input-group label {
+            position: absolute; top: 14px; left: 15px;
+            color: #999; pointer-events: none; transition: 0.3s; font-size: 0.9rem;
+            background: var(--white); padding: 0 5px;
         }
-        .qty-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
-        .qty-val { font-weight: 600; width: 20px; text-align: center; }
 
-        .item-price { font-weight: 700; font-size: 1.1rem; color: var(--primary-dark); min-width: 90px; text-align: right; }
+        .input-group input:focus, .input-group select:focus, .input-group textarea:focus { border-color: var(--primary); }
         
-        .btn-remove { 
-            color: #aaa; margin-left: 20px; cursor: pointer; transition: 0.3s; font-size: 1.1rem; 
+        .input-group input:focus ~ label, .input-group input:not(:placeholder-shown) ~ label,
+        .input-group select:focus ~ label, .input-group select:valid ~ label,
+        .input-group textarea:focus ~ label, .input-group textarea:not(:placeholder-shown) ~ label {
+            top: -10px; left: 10px; color: var(--primary); font-size: 0.8rem; font-weight: 600;
         }
-        .btn-remove:hover { color: var(--danger); transform: scale(1.1); }
 
         /* --- ADD-ONS SECTION --- */
-        .addons-wrapper {
-            background: #fffcf8;
-            border: 2px dashed #eaddcf;
-            border-radius: 15px;
-            padding: 25px;
-        }
-        .addons-wrapper h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin-bottom: 20px; color: var(--text-dark); }
-        
-        .addons-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 15px;
-        }
-        
-        .addon-card {
-            background: white;
-            border-radius: 8px;
+        .addons-section {
+            background: #f9f9f9;
             padding: 15px;
-            text-align: center;
-            border: 1px solid #eee;
-            transition: 0.3s;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border: 1px dashed #ddd;
         }
-        .addon-card:hover { border-color: var(--primary); transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .addons-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 10px; color: #555; }
         
-        .addon-icon { font-size: 2rem; color: var(--primary); margin-bottom: 10px; }
-        .addon-name { font-weight: 600; font-size: 0.9rem; margin-bottom: 5px; height: 40px; display: flex; align-items: center; justify-content: center; }
-        .addon-price { color: #888; font-size: 0.85rem; display: block; margin-bottom: 10px; }
-        
-        .btn-add-addon {
-            padding: 5px 15px;
-            border: 1px solid var(--primary);
-            color: var(--primary);
-            background: transparent;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
+        .addon-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .addon-checkbox {
+            display: flex;
+            align-items: center;
             cursor: pointer;
+            padding: 8px;
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 4px;
             transition: 0.3s;
         }
-        .btn-add-addon:hover { background: var(--primary); color: white; }
+        .addon-checkbox:hover { border-color: var(--primary); }
+        .addon-checkbox input { margin-right: 10px; accent-color: var(--primary); width: 16px; height: 16px; }
+        .addon-checkbox span { font-size: 0.9rem; color: #444; }
 
 
-        /* --- RIGHT: SUMMARY & CHECKOUT --- */
-        .cart-summary {
-            background: var(--white);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            position: sticky; top: 100px;
+        /* File Upload */
+        .file-upload-box {
+            border: 2px dashed #ddd; padding: 20px; text-align: center; border-radius: 8px;
+            cursor: pointer; transition: 0.3s; margin-bottom: 25px; position: relative;
         }
+        .file-upload-box:hover { border-color: var(--primary); background: #fffcf8; }
+        .file-icon { font-size: 2rem; color: var(--primary); margin-bottom: 10px; display: block; }
+        .file-note { font-size: 0.8rem; color: #999; margin-top: 5px; }
 
-        .summary-header { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 20px; border-bottom: 2px solid var(--bg-light); padding-bottom: 15px; }
-        
-        .summary-row { display: flex; justify-content: space-between; margin-bottom: 15px; color: #666; }
-        .summary-row.total { font-weight: 700; color: var(--text-dark); font-size: 1.3rem; border-top: 2px solid var(--bg-light); padding-top: 15px; margin-top: 10px; }
+        /* Button */
+        .btn-send {
+            width: 100%; padding: 15px; background: var(--primary); color: var(--white);
+            border: none; border-radius: 4px; font-size: 1rem; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: 0.3s;
+            display: flex; justify-content: center; align-items: center; gap: 10px;
+        }
+        .btn-send:hover { background: var(--primary-dark); transform: translateY(-3px); }
 
-        /* Order Type Selector */
-        .order-type-selector {
-            display: flex; gap: 10px; margin-bottom: 20px; background: #f9f9f9; padding: 5px; border-radius: 8px;
-        }
-        .type-option {
-            flex: 1; text-align: center; padding: 10px; cursor: pointer; border-radius: 6px; font-weight: 600; font-size: 0.9rem; transition: 0.3s;
-            border: 1px solid transparent;
-        }
-        .type-option.active {
-            background: var(--white); border-color: var(--primary); color: var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-
-        /* Checkout Form */
-        .checkout-form { margin-top: 30px; }
-        .form-group { margin-bottom: 15px; position: relative; }
-        
-        .form-input {
-            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;
-            font-family: 'Montserrat', sans-serif; transition: 0.3s; background: #fafafa;
-        }
-        .form-input:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 3px rgba(212, 163, 115, 0.1); }
-
-        .btn-checkout {
-            width: 100%; padding: 15px; border: none; border-radius: 8px;
-            background: var(--success); color: white; font-weight: 600; font-size: 1rem;
-            cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px;
-            transition: 0.3s; margin-top: 10px;
-            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
-        }
-        .btn-checkout:hover { background: #1ebd59; transform: translateY(-2px); }
-
-        /* Empty State */
-        .empty-cart { text-align: center; padding: 50px; grid-column: 1 / -1; }
-        .empty-cart i { font-size: 4rem; color: #ddd; margin-bottom: 20px; }
-        .btn-shop { display: inline-block; padding: 10px 25px; background: var(--text-dark); color: white; text-decoration: none; border-radius: 20px; margin-top: 20px; transition: 0.3s; }
-        .btn-shop:hover { background: var(--primary); }
+        /* --- FOOTER --- */
+        footer { background: #1a1a1a; color: #888; padding: 40px 0; text-align: center; border-top: 1px solid #333; margin-top: auto; }
 
         /* Responsive */
         @media (max-width: 900px) {
-            .cart-layout { grid-template-columns: 1fr; }
-            .cart-summary { position: static; }
-        }
-        @media (max-width: 500px) {
-            .cart-card { flex-wrap: wrap; }
-            .item-qty { margin: 15px 0; }
-            .item-price { margin-left: auto; }
+            /* Header */
+            .nav-links { display: none; }
+            .hamburger { display: block; position: absolute; left: 0; }
+            header { padding: 15px 20px; }
+            .navbar { justify-content: center; } 
+            .logo { margin: 0 auto; }
+            .logo img { height: 50px; }
+            .nav-icons { position: absolute; right: 0; }
+
+            /* Form Layout */
+            .form-container { flex-direction: column; margin: 30px auto; width: 95%; }
+            .visual-side { padding: 60px 20px; min-height: 250px; }
+            .form-side { padding: 30px 20px; }
+            .header-row h3 { font-size: 1.5rem; }
+            
+            .addon-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
-<body>
+<body id="body-lock">
+
+    <div class="mobile-overlay" id="mobileOverlay" onclick="toggleDrawer()"></div>
+    <div class="mobile-drawer" id="mobileDrawer">
+        <span class="drawer-close" onclick="toggleDrawer()">×</span>
+        <a href="index.html" class="drawer-link">Home</a>
+        <a href="shop.html" class="drawer-link">All Products</a>
+        <a href="custom-cake.html" class="drawer-link" style="color:var(--primary)">Custom Cake</a>
+        <a href="#about" class="drawer-link">About</a>
+        <a href="#contact" class="drawer-link">Contact Us</a>
+        <a href="login.html" class="drawer-link">Login</a>
+        <a href="wishlist.html" class="drawer-link">Wishlist</a>
+    </div>
 
     <header>
-        <div class="logo"><a href="index.html"><img src="logo.png" alt="Soft Cake Logo"></a></div>
-        <nav class="nav-center">
-            <a href="shop.html" class="nav-link"><i class="fas fa-arrow-left"></i> <span>Continue Shopping</span></a>
-        </nav>
+        <div class="navbar">
+            <div class="hamburger" onclick="toggleDrawer()">
+                <i class="fas fa-bars"></i>
+            </div>
+
+            <div class="logo">
+                <a href="index.html"><img src="logo.png" alt="Soft Cake Logo"></a>
+            </div>
+
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="shop.html">Shop</a>
+                <a href="#about">About</a>
+                <a href="#contact">Contact</a>
+            </nav>
+
+            <div class="nav-icons">
+                <a href="login.html"><i class="fas fa-user"></i></a>
+                <a href="wishlist.html"><i class="fas fa-heart"></i></a>
+                <a href="cart.html"><i class="fas fa-shopping-cart"></i> <span class="cart-badge" id="cart-count">0</span></a>
+            </div>
+        </div>
     </header>
 
-    <div class="container">
-        <div class="page-header">
-            <h1>Your Shopping Bag</h1>
-            <p>You are just a few steps away from sweetness.</p>
+    <div class="form-container" data-aos="fade-up">
+        
+        <div class="visual-side">
+            <div class="visual-overlay"></div>
+            <div class="visual-content">
+                <div style="font-size: 4rem; margin-bottom: 10px;"><i class="fas fa-birthday-cake"></i></div>
+                <h2>Bake Your<br>Imagination</h2>
+                <p>Tell us what you dream of, and our artisan bakers will bring it to life.</p>
+            </div>
         </div>
 
-        <div class="cart-layout" id="cart-container">
-            
-            <div class="cart-left-section">
-                <div class="cart-items" id="cart-list"></div>
-
-                <div class="addons-wrapper">
-                    <h3><i class="fas fa-gift" style="color:var(--primary); margin-right:10px;"></i> Add-ons & Extras</h3>
-                    <div class="addons-grid" id="addons-list">
-                        </div>
+        <div class="form-side">
+            <div class="header-row">
+                <div>
+                    <h3>Design Details</h3>
+                    <div class="separator"></div>
                 </div>
             </div>
 
-            <div class="cart-summary">
-                <h2 class="summary-header">Order Summary</h2>
-                
-                <div class="order-type-selector">
-                    <div class="type-option" id="opt-delivery" onclick="setOrderType('delivery')">Delivery</div>
-                    <div class="type-option active" id="opt-takeaway" onclick="setOrderType('takeaway')">Takeaway</div>
+            <div class="input-group">
+                <input type="text" id="c_name" placeholder=" " required>
+                <label>Your Name</label>
+            </div>
+
+            <div style="display: flex; gap: 15px;">
+                <div class="input-group" style="flex: 1;">
+                    <select id="flavor" required>
+                        <option value="" disabled selected></option>
+                        <option value="Vanilla Butter">Vanilla Butter</option>
+                        <option value="Double Chocolate">Double Chocolate</option>
+                        <option value="Red Velvet">Red Velvet</option>
+                        <option value="Coffee Mocha">Coffee Mocha</option>
+                        <option value="Fruit Gateau">Fruit Gateau</option>
+                    </select>
+                    <label>Flavor Preference</label>
+                    <i class="fas fa-chevron-down" style="position: absolute; right: 15px; top: 15px; color: #ccc; pointer-events: none; font-size: 0.8rem;"></i>
                 </div>
 
-                <div class="summary-row">
-                    <span>Subtotal</span>
-                    <span id="subtotal">Rs. 0</span>
-                </div>
-                <div class="summary-row">
-                    <span>Delivery Fee</span>
-                    <span id="delivery-fee">Rs. 0</span>
-                </div>
-                <div class="summary-row total">
-                    <span>Total</span>
-                    <span id="final-total" style="color:var(--primary-dark)">Rs. 0</span>
-                </div>
-
-                <div class="checkout-form">
-                    <h3 style="margin-bottom:15px; font-size:1.1rem;">Customer Details</h3>
-                    <div class="form-group">
-                        <input type="text" id="c-name" class="form-input" placeholder="Your Full Name">
-                    </div>
-                    <div class="form-group">
-                        <input type="tel" id="c-mobile" class="form-input" placeholder="Mobile Number">
-                    </div>
-                    
-                    <div class="form-group" id="address-group" style="display:none;">
-                        <textarea id="c-address" class="form-input" rows="3" placeholder="Delivery Address"></textarea>
-                    </div>
-
-                    <button class="btn-checkout" onclick="checkout()">
-                        <i class="fab fa-whatsapp"></i> Confirm Order
-                    </button>
+                <div class="input-group" style="flex: 1;">
+                    <input type="number" id="weight" placeholder=" " min="1" step="0.5">
+                    <label>Weight (Kg)</label>
                 </div>
             </div>
 
-        </div>
+            <div class="input-group">
+                <input type="text" id="wording" placeholder=" ">
+                <label>Wording on Cake (e.g. Happy Birthday)</label>
+            </div>
 
-        <div id="empty-state" class="empty-cart" style="display: none;">
-            <i class="fas fa-shopping-basket"></i>
-            <h2>Your bag is empty</h2>
-            <p style="color:#888;">Looks like you haven't made your choice yet.</p>
-            <a href="shop.html" class="btn-shop">Browse Products</a>
+            <div class="addons-section">
+                <div class="addons-title">Need Extras?</div>
+                <div class="addon-grid">
+                    <label class="addon-checkbox">
+                        <input type="checkbox" value="Cupcakes / Cookies">
+                        <span>Cupcakes / Cookies</span>
+                    </label>
+                    <label class="addon-checkbox">
+                        <input type="checkbox" value="Candles">
+                        <span>Candles</span>
+                    </label>
+                    <label class="addon-checkbox">
+                        <input type="checkbox" value="Cake Topper">
+                        <span>Cake Topper</span>
+                    </label>
+                    <label class="addon-checkbox">
+                        <input type="checkbox" value="Message Card">
+                        <span>Message Card</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <textarea id="notes" placeholder=" "></textarea>
+                <label>Special Instructions / Theme</label>
+            </div>
+
+            <div class="file-upload-box">
+                <i class="fas fa-cloud-upload-alt file-icon"></i>
+                <span>Have a reference image?</span>
+                <div class="file-note">*You will attach the image in WhatsApp after clicking 'Request Quote'</div>
+            </div>
+
+            <button class="btn-send" onclick="sendToWhatsApp()">
+                <i class="fab fa-whatsapp"></i> Request Quote
+            </button>
+
         </div>
     </div>
 
+    <footer>
+        <p>© 2025 Soft Cake. All Rights Reserved.</p>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        // --- LOGIC ---
-        let cart = JSON.parse(localStorage.getItem('softCakeCart')) || [];
-        let orderType = 'takeaway'; // Default
-        const deliveryCost = 350;
+        AOS.init({ duration: 1000, once: true });
 
-        // Add-ons Data
-        const addonData = [
-            { id: 901, name: "Cupcakes / Cookies Pack", price: 400, icon: "fas fa-cookie-bite", size: "Pack" },
-            { id: 902, name: "Birthday Candles", price: 100, icon: "fas fa-fire", size: "Pack" },
-            { id: 903, name: "Cake Topper", price: 350, icon: "fas fa-star", size: "Std" },
-            { id: 904, name: "Message Card", price: 150, icon: "fas fa-envelope-open-text", size: "Card" }
-        ];
-
-        function renderCart() {
-            const listContainer = document.getElementById('cart-list');
-            const mainContainer = document.getElementById('cart-container');
-            const emptyContainer = document.getElementById('empty-state');
+        // --- MOBILE DRAWER LOGIC ---
+        function toggleDrawer() {
+            const drawer = document.getElementById('mobileDrawer');
+            const overlay = document.getElementById('mobileOverlay');
+            const body = document.getElementById('body-lock');
             
-            listContainer.innerHTML = '';
-            let subtotal = 0;
-
-            if (cart.length === 0) {
-                mainContainer.style.display = 'none';
-                emptyContainer.style.display = 'block';
-                return;
+            if(drawer.parentElement.classList.contains('drawer-active')) {
+                drawer.parentElement.classList.remove('drawer-active');
+                body.style.overflow = 'auto';
+            } else {
+                drawer.parentElement.classList.add('drawer-active');
+                body.style.overflow = 'hidden';
             }
+        }
 
-            mainContainer.style.display = 'grid';
-            emptyContainer.style.display = 'none';
+        // --- CART BADGE LOGIC ---
+        function updateBadge() {
+            const cart = JSON.parse(localStorage.getItem('softCakeCart')) || [];
+            document.getElementById('cart-count').innerText = cart.length;
+        }
+        window.onload = updateBadge;
 
-            cart.forEach((item, index) => {
-                let itemTotal = item.total; 
-                if(!itemTotal) itemTotal = item.price * item.qty;
+        // --- WHATSAPP LOGIC ---
+        function sendToWhatsApp() {
+            // Get Values
+            const name = document.getElementById('c_name').value;
+            const flavor = document.getElementById('flavor').value;
+            const weight = document.getElementById('weight').value;
+            const wording = document.getElementById('wording').value;
+            const notes = document.getElementById('notes').value;
 
-                subtotal += itemTotal;
-
-                // Handle image (icon vs real img)
-                let imgHTML = `<img src="${item.img}" alt="${item.name}">`;
-                if(item.isAddon) {
-                    imgHTML = `<div class="item-img icon-only"><i class="${item.img}"></i></div>`;
-                } else {
-                    imgHTML = `<div class="item-img"><img src="${item.img}" alt="${item.name}"></div>`;
-                }
-
-                const html = `
-                    <div class="cart-card">
-                        ${imgHTML}
-                        <div class="item-details">
-                            <h3>${item.name}</h3>
-                            <div class="meta">Option: ${item.size}</div>
-                        </div>
-                        <div class="item-qty">
-                            <div class="qty-btn" onclick="updateQty(${index}, -1)">-</div>
-                            <div class="qty-val">${item.qty}</div>
-                            <div class="qty-btn" onclick="updateQty(${index}, 1)">+</div>
-                        </div>
-                        <div class="item-price">Rs. ${itemTotal.toLocaleString()}</div>
-                        <div class="btn-remove" onclick="removeItem(${index})"><i class="fas fa-trash-alt"></i></div>
-                    </div>
-                `;
-                listContainer.innerHTML += html;
+            // Get Add-ons
+            const addons = [];
+            document.querySelectorAll('.addon-checkbox input:checked').forEach(cb => {
+                addons.push(cb.value);
             });
 
-            document.getElementById('subtotal').innerText = 'Rs. ' + subtotal.toLocaleString();
-            updateFinalTotal(subtotal);
-            renderAddons(); // Render add-ons here
-        }
-
-        // Render Add-ons List
-        function renderAddons() {
-            const container = document.getElementById('addons-list');
-            container.innerHTML = addonData.map(a => `
-                <div class="addon-card">
-                    <div class="addon-icon"><i class="${a.icon}"></i></div>
-                    <div class="addon-name">${a.name}</div>
-                    <span class="addon-price">Rs. ${a.price}</span>
-                    <button class="btn-add-addon" onclick="addAddon(${a.id})">Add +</button>
-                </div>
-            `).join('');
-        }
-
-        function addAddon(id) {
-            const addon = addonData.find(a => a.id === id);
-            // Check if already in cart
-            const exists = cart.find(i => i.id === addon.id);
-            if(exists) {
-                exists.qty++;
-                exists.total = exists.price * exists.qty;
-            } else {
-                cart.push({
-                    id: addon.id,
-                    name: addon.name,
-                    price: addon.price,
-                    qty: 1,
-                    size: addon.size,
-                    img: addon.icon, // Store class name as img property
-                    isAddon: true,
-                    total: addon.price
-                });
-            }
-            localStorage.setItem('softCakeCart', JSON.stringify(cart));
-            renderCart();
-            alert(addon.name + " added!");
-        }
-
-        function updateQty(index, change) {
-            const item = cart[index];
-            const newQty = item.qty + change;
-
-            if (newQty > 0) {
-                let currentLineTotal = item.total || (item.price * item.qty);
-                let unitPrice = currentLineTotal / item.qty;
-
-                item.qty = newQty;
-                item.total = unitPrice * newQty;
-
-                localStorage.setItem('softCakeCart', JSON.stringify(cart));
-                renderCart();
-            }
-        }
-
-        function removeItem(index) {
-            if(confirm("Remove this item?")) {
-                cart.splice(index, 1);
-                localStorage.setItem('softCakeCart', JSON.stringify(cart));
-                renderCart();
-            }
-        }
-
-        // --- ORDER TYPE LOGIC ---
-        function setOrderType(type) {
-            orderType = type;
-            document.getElementById('opt-delivery').classList.remove('active');
-            document.getElementById('opt-takeaway').classList.remove('active');
-            document.getElementById('opt-' + type).classList.add('active');
-
-            const addrGroup = document.getElementById('address-group');
-            if(type === 'delivery') {
-                addrGroup.style.display = 'block';
-            } else {
-                addrGroup.style.display = 'none';
-            }
-            renderCart(); 
-        }
-
-        function updateFinalTotal(subtotal) {
-            const feeEl = document.getElementById('delivery-fee');
-            const totalEl = document.getElementById('final-total');
-            let currentFee = (orderType === 'delivery') ? deliveryCost : 0;
-            
-            feeEl.innerText = 'Rs. ' + currentFee;
-            totalEl.innerText = 'Rs. ' + (subtotal + currentFee).toLocaleString();
-        }
-
-        function checkout() {
-            const name = document.getElementById('c-name').value;
-            const mobile = document.getElementById('c-mobile').value;
-            const address = document.getElementById('c-address').value;
-
-            if (!name || !mobile) {
-                alert("Please fill in Name and Mobile Number.");
-                return;
-            }
-            if (orderType === 'delivery' && !address) {
-                alert("Please fill in Delivery Address.");
+            // Simple Validation
+            if(!name || !flavor || !weight) {
+                alert("Please fill in your Name, Flavor, and Weight.");
                 return;
             }
 
-            let subtotal = 0;
-            let itemsMsg = "";
-            cart.forEach(item => {
-                let t = item.total || (item.price * item.qty);
-                subtotal += t;
-                itemsMsg += `• ${item.name} (${item.size}) x ${item.qty} = Rs. ${t}%0A`;
-            });
+            // Format Message
+            let msg = `*🎂 CUSTOM CAKE INQUIRY 🎂*%0A%0A`;
+            msg += `*Name:* ${name}%0A`;
+            msg += `*Flavor:* ${flavor}%0A`;
+            msg += `*Weight:* ${weight} kg%0A`;
+            msg += `*Wording:* "${wording}"%0A`;
             
-            let currentFee = (orderType === 'delivery') ? deliveryCost : 0;
-            const total = subtotal + currentFee;
-            const typeLabel = (orderType === 'delivery') ? "🚚 DELIVERY" : "🥡 TAKEAWAY";
-
-            let msg = `*🍰 NEW ORDER - SOFT CAKE 🍰*%0A`;
-            msg += `*Type:* ${typeLabel}%0A%0A`;
-            msg += `*Customer:* ${name}%0A`;
-            msg += `*Phone:* ${mobile}%0A`;
-            
-            if(orderType === 'delivery') {
-                msg += `*Address:* ${address}%0A`;
+            if(addons.length > 0) {
+                msg += `*Add-ons:* ${addons.join(', ')}%0A`;
             }
 
-            msg += `---------------------------%0A`;
-            msg += itemsMsg;
-            msg += `---------------------------%0A`;
-            msg += `*Subtotal:* Rs. ${subtotal}%0A`;
-            msg += `*Delivery Fee:* Rs. ${currentFee}%0A`;
-            msg += `*GRAND TOTAL: Rs. ${total}*%0A%0A`;
-            msg += `_Please confirm my order._`;
+            msg += `*Notes:* ${notes}%0A%0A`;
+            msg += `_(I will attach the reference image now)_`;
 
-            // Updated WhatsApp Number
+            // Open WhatsApp (Replace number if needed)
             window.open(`https://wa.me/94704287604?text=${msg}`, '_blank');
         }
-
-        // Initialize
-        renderCart();
     </script>
 </body>
 </html>
