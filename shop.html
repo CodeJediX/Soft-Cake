@@ -18,18 +18,19 @@
             --text-light: #888;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
 
         body {
             font-family: 'Montserrat', sans-serif;
             background-color: var(--bg-cream);
             color: var(--text-dark);
+            overflow-x: hidden; /* Prevent horizontal scroll */
         }
 
         /* --- HEADER --- */
         header {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 20px 40px;
+            background: rgba(255, 255, 255, 0.98);
+            padding: 15px 20px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.05);
             display: flex; justify-content: space-between; align-items: center;
             position: sticky; top: 0; z-index: 100;
@@ -37,15 +38,32 @@
 
         .logo a { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--text-dark); text-decoration: none; }
         .logo span { color: var(--primary); }
-        .nav-link { color: var(--text-dark); text-decoration: none; font-weight: 500; transition:0.3s; }
+        
+        /* Desktop Nav */
+        .nav-links-desktop { display: flex; gap: 20px; align-items: center; }
+        .nav-link { color: var(--text-dark); text-decoration: none; font-weight: 500; transition:0.3s; font-size: 0.9rem; }
         .nav-link:hover { color: var(--primary); }
+        
+        .hamburger { display: none; font-size: 1.4rem; cursor: pointer; color: var(--text-dark); margin-right: 15px; }
+
+        /* --- MOBILE DRAWER (Copied logic from Home Page) --- */
+        .mobile-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1001; opacity: 0; visibility: hidden; transition: 0.3s; }
+        .mobile-drawer { position: fixed; top: 0; left: 0; width: 280px; height: 100%; background: #fff; z-index: 1002; transform: translateX(-100%); transition: 0.4s cubic-bezier(0.77, 0, 0.175, 1); display: flex; flex-direction: column; padding-top: 60px; box-shadow: 5px 0 15px rgba(0,0,0,0.1); }
+        
+        .drawer-active .mobile-overlay { opacity: 1; visibility: visible; }
+        .drawer-active .mobile-drawer { transform: translateX(0); }
+        
+        .drawer-close { position: absolute; top: 20px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #555; }
+        .drawer-link { display: block; padding: 15px 30px; border-bottom: 1px solid #f5f5f5; font-size: 1rem; color: #333; font-weight: 500; text-decoration: none; }
+        .drawer-link:hover { background: #fcfcfc; color: var(--primary); }
+
 
         /* --- PAGE LAYOUT --- */
         .page-banner {
-            text-align: center; padding: 60px 20px;
-            background: var(--white); margin-bottom: 40px;
+            text-align: center; padding: 40px 20px;
+            background: var(--white); margin-bottom: 30px;
         }
-        .page-banner h1 { font-family: 'Playfair Display', serif; font-size: 3rem; margin-bottom: 10px; }
+        .page-banner h1 { font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 10px; }
         .page-banner p { color: var(--primary); font-style: italic; }
 
         .container {
@@ -59,7 +77,7 @@
             background: var(--white);
             padding: 30px;
             border-radius: 15px;
-            position: sticky; top: 100px;
+            position: sticky; top: 90px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.03);
             transition: 0.3s;
         }
@@ -99,10 +117,12 @@
         .price-label { font-size: 0.9rem; color: var(--text-dark); margin-top: 10px; font-weight: 600; display: flex; justify-content: space-between; }
 
         /* --- PRODUCT GRID --- */
-        .shop-content { flex: 1; }
+        .shop-content { flex: 1; width: 100%; }
         
         .products-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 30px;
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); 
+            gap: 30px;
         }
 
         .product-card {
@@ -146,7 +166,7 @@
         /* Card Info */
         .info-box { padding: 20px; text-align: center; }
         .info-box .cat { font-size: 0.75rem; text-transform: uppercase; color: #aaa; letter-spacing: 1px; }
-        .info-box h4 { font-family: 'Playfair Display', serif; font-size: 1.1rem; margin: 5px 0; color: var(--text-dark); }
+        .info-box h4 { font-family: 'Playfair Display', serif; font-size: 1.1rem; margin: 5px 0; color: var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
         .info-box .price { color: var(--primary); font-weight: 700; font-size: 1.1rem; }
 
         /* --- TOAST NOTIFICATION --- */
@@ -154,28 +174,77 @@
             visibility: hidden; min-width: 280px;
             background-color: var(--text-dark); color: #fff;
             text-align: center; border-radius: 50px;
-            padding: 16px; position: fixed; z-index: 1000;
+            padding: 16px; position: fixed; z-index: 2000;
             left: 50%; bottom: 30px; transform: translateX(-50%);
             font-size: 14px; opacity: 0; transition: opacity 0.5s, bottom 0.5s;
             box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
         #toast.show { visibility: visible; opacity: 1; bottom: 50px; }
 
-        /* Responsive */
+        /* --- RESPONSIVE MEDIA QUERIES --- */
         @media (max-width: 900px) {
-            .container { flex-direction: column; }
-            .sidebar { width: 100%; position: static; margin-bottom: 30px; }
+            /* Header */
+            .hamburger { display: block; }
+            .nav-links-desktop { display: none; }
+            
+            /* Layout */
+            .container { flex-direction: column; padding: 0 15px 60px; }
+            .sidebar { width: 100%; position: relative; top: 0; margin-bottom: 20px; padding: 20px; }
+            
+            /* Banner */
+            .page-banner h1 { font-size: 2rem; }
+
+            /* Grid - Force 2 Columns on Mobile */
+            .products-grid { 
+                grid-template-columns: repeat(2, 1fr); 
+                gap: 15px; 
+            }
+            
+            /* Product Card Mobile Styling */
+            .img-box { height: 160px; }
+            .info-box { padding: 15px 10px; }
+            .info-box h4 { font-size: 0.95rem; }
+            .info-box .price { font-size: 1rem; }
+            
+            /* Mobile Actions - Always visible on image since no hover */
+            .actions { 
+                opacity: 1; 
+                transform: translateY(0); 
+                bottom: 10px; 
+            }
+            .btn-add {
+                padding: 6px 12px;
+                font-size: 0.7rem;
+            }
         }
     </style>
 </head>
-<body>
+<body id="body-lock">
+
+    <div class="mobile-overlay" id="mobileOverlay" onclick="toggleDrawer()"></div>
+    <div class="mobile-drawer" id="mobileDrawer">
+        <span class="drawer-close" onclick="toggleDrawer()">×</span>
+        <a href="index.html" class="drawer-link">Home</a>
+        <a href="shop.html" class="drawer-link" style="color:var(--primary);">Shop Menu</a>
+        <a href="cart.html" class="drawer-link">My Cart</a>
+        <a href="#about" class="drawer-link">About Us</a>
+        <a href="#contact" class="drawer-link">Contact</a>
+    </div>
 
     <header>
-        <div class="logo"><a href="index.html">Soft<span>Cake</span>.</a></div>
-        <nav>
+        <div style="display: flex; align-items: center;">
+            <div class="hamburger" onclick="toggleDrawer()">
+                <i class="fas fa-bars"></i>
+            </div>
+            <div class="logo"><a href="index.html">Soft<span>Cake</span>.</a></div>
+        </div>
+        
+        <nav class="nav-links-desktop">
             <a href="index.html" class="nav-link">Home</a>
-            <a href="cart.html" class="nav-link" style="margin-left: 20px;"><i class="fas fa-shopping-bag"></i> Cart</a>
+            <a href="shop.html" class="nav-link" style="color:var(--primary);">Shop</a>
+            <a href="cart.html" class="nav-link"><i class="fas fa-shopping-bag"></i> Cart</a>
         </nav>
+        <a href="cart.html" class="nav-link" style="display: block; font-size: 1.2rem; margin-left: auto; margin-right: 0;"><i class="fas fa-shopping-bag"></i></a>
     </header>
 
     <div class="page-banner">
@@ -225,8 +294,22 @@
     <script>
         AOS.init();
 
+        // --- MOBILE DRAWER LOGIC ---
+        function toggleDrawer() {
+            const drawer = document.getElementById('mobileDrawer');
+            const overlay = document.getElementById('mobileOverlay');
+            const body = document.getElementById('body-lock');
+            
+            if(drawer.parentElement.classList.contains('drawer-active')) {
+                drawer.parentElement.classList.remove('drawer-active');
+                body.style.overflow = 'auto';
+            } else {
+                drawer.parentElement.classList.add('drawer-active');
+                body.style.overflow = 'hidden';
+            }
+        }
+
         // --- DATA ---
-        // Fallback data if local storage is empty
         const defaultData = [
             { id: 1, name: "Spicy Fish Roll", price: 210, cat: "savoury", img: "https://images.unsplash.com/photo-1626804475297-411d8c6b71f5?auto=format&fit=crop&w=600&q=80" },
             { id: 2, name: "Double Choc Fudge", price: 2500, cat: "cakes", img: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80" },
@@ -265,7 +348,7 @@
                             <img src="${p.img}" alt="${p.name}">
                             <div class="actions">
                                 <button class="btn-add" onclick="addToCart(${p.id})">
-                                    <i class="fas fa-cart-plus"></i> Add to Cart
+                                    <i class="fas fa-cart-plus"></i> Add
                                 </button>
                             </div>
                         </div>
@@ -296,13 +379,10 @@
         }
 
         function setCategory(cat, el) {
-            // Update UI Active State
             document.querySelectorAll('.cat-link').forEach(l => l.classList.remove('active'));
             el.classList.add('active');
-            
-            // Logic
             activeCat = cat;
-            filterProducts(); // Re-run filter based on new cat + existing search/price
+            filterProducts();
         }
 
         // --- ADD TO CART ---
@@ -310,7 +390,6 @@
             const p = products.find(i => i.id === id);
             let cart = JSON.parse(localStorage.getItem('softCakeCart')) || [];
             
-            // Check if item exists to update qty or add new
             const existing = cart.find(item => item.id === id);
             if(existing) {
                 existing.qty++;
@@ -328,11 +407,10 @@
             setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
         }
 
-        // Handle URL Params for filtering from Home Page
+        // Handle URL Params
         const params = new URLSearchParams(window.location.search);
         const urlCat = params.get('cat');
         if(urlCat) {
-            // Find link matching the cat and click it (simulated)
             const links = document.querySelectorAll('.cat-link');
             links.forEach(link => {
                 if(link.getAttribute('onclick').includes(`'${urlCat}'`)) {
