@@ -151,6 +151,11 @@
             top: -10px; left: 10px; color: var(--primary); font-size: 0.8rem; font-weight: 600;
         }
 
+        /* Fix for Date Input Label */
+        .input-group input[type="date"] ~ label {
+            top: -10px; left: 10px; color: var(--primary); font-size: 0.8rem; font-weight: 600;
+        }
+
         /* --- ADD-ONS SECTION --- */
         .addons-section {
             background: #f9f9f9;
@@ -287,15 +292,26 @@
                 <label>Your Name</label>
             </div>
 
+            <div class="input-group">
+                <input type="tel" id="c_mobile" placeholder=" " required>
+                <label>Mobile Number</label>
+            </div>
+
+            <div class="input-group">
+                <input type="date" id="c_date" required>
+                <label>Cake Needed Date</label>
+            </div>
+
             <div style="display: flex; gap: 15px;">
                 <div class="input-group" style="flex: 1;">
                     <select id="flavor" required>
                         <option value="" disabled selected></option>
-                        <option value="Vanilla Butter">Vanilla Butter</option>
-                        <option value="Double Chocolate">Double Chocolate</option>
+                        <option value="Butter Cake">Vanilla Butter</option>
+                        <option value="Chocolate Cake">Double Chocolate</option>
                         <option value="Red Velvet">Red Velvet</option>
-                        <option value="Coffee Mocha">Coffee Mocha</option>
-                        <option value="Fruit Gateau">Fruit Gateau</option>
+                        <option value="Coffee Cake">Coffee Mocha</option>
+                        <option value="Fruit Cake">Fruit Gateau</option>
+                        <option value="Ribon Cake">Fruit Gateau</option>
                     </select>
                     <label>Flavor Preference</label>
                     <i class="fas fa-chevron-down" style="position: absolute; right: 15px; top: 15px; color: #ccc; pointer-events: none; font-size: 0.8rem;"></i>
@@ -375,17 +391,31 @@
             }
         }
 
-        // --- CART BADGE LOGIC ---
-        function updateBadge() {
+        // --- INIT LOGIC ---
+        window.onload = function() {
+            // 1. Update Badge
             const cart = JSON.parse(localStorage.getItem('softCakeCart')) || [];
             document.getElementById('cart-count').innerText = cart.length;
-        }
-        window.onload = updateBadge;
+
+            // 2. Set Min Date (Prevent Past Dates)
+            const dateInput = document.getElementById('c_date');
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.setAttribute('min', today);
+
+            // 3. Auto-fill User Info if Logged In
+            const user = JSON.parse(localStorage.getItem('softCakeUser'));
+            if(user) {
+                if(user.name) document.getElementById('c_name').value = user.name;
+                if(user.phone) document.getElementById('c_mobile').value = user.phone;
+            }
+        };
 
         // --- WHATSAPP LOGIC ---
         function sendToWhatsApp() {
             // Get Values
             const name = document.getElementById('c_name').value;
+            const mobile = document.getElementById('c_mobile').value;
+            const date = document.getElementById('c_date').value;
             const flavor = document.getElementById('flavor').value;
             const weight = document.getElementById('weight').value;
             const wording = document.getElementById('wording').value;
@@ -397,24 +427,32 @@
                 addons.push(cb.value);
             });
 
-            // Simple Validation
-            if(!name || !flavor || !weight) {
-                alert("Please fill in your Name, Flavor, and Weight.");
+            // Validation
+            if(!name || !mobile || !flavor || !weight) {
+                alert("Please fill in Name, Mobile, Flavor, and Weight.");
+                return;
+            }
+            if(!date) {
+                alert("Please select the Date Needed.");
                 return;
             }
 
             // Format Message
             let msg = `*🎂 CUSTOM CAKE INQUIRY 🎂*%0A%0A`;
             msg += `*Name:* ${name}%0A`;
+            msg += `*Phone:* ${mobile}%0A`;
+            msg += `*Date Needed:* ${date}%0A`;
             msg += `*Flavor:* ${flavor}%0A`;
             msg += `*Weight:* ${weight} kg%0A`;
-            msg += `*Wording:* "${wording}"%0A`;
+            
+            if(wording) msg += `*Wording:* "${wording}"%0A`;
             
             if(addons.length > 0) {
                 msg += `*Add-ons:* ${addons.join(', ')}%0A`;
             }
 
-            msg += `*Notes:* ${notes}%0A%0A`;
+            if(notes) msg += `*Notes:* ${notes}%0A%0A`;
+            
             msg += `_(I will attach the reference image now)_`;
 
             // Open WhatsApp (Replace number if needed)
