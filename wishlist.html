@@ -31,22 +31,65 @@
 
         /* --- HEADER --- */
         header {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 20px 40px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 40px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-            display: flex; justify-content: space-between; align-items: center;
+            display: flex;
+            align-items: center;
             position: sticky; top: 0; z-index: 100;
             backdrop-filter: blur(10px);
+            height: 90px; /* Fixed height for consistency */
         }
 
-        .logo a { 
-            font-family: 'Playfair Display', serif; font-size: 1.5rem; 
-            font-weight: 700; color: var(--text-dark); text-decoration: none; 
-        }
-        .logo span { color: var(--primary); }
+        /* Desktop: Logo Left */
+        .logo { margin-right: auto; z-index: 2; }
+        .logo a { display: block; }
+        .logo img { height: 75px; transition: 0.3s; }
 
-        .nav-link { color: var(--text-dark); text-decoration: none; font-weight: 500; transition: 0.3s; }
+        /* Desktop: Nav Center */
+        .nav-center {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+        }
+        .nav-link { 
+            color: var(--text-dark); 
+            text-decoration: none; 
+            font-weight: 500; 
+            font-size: 1rem;
+            transition: 0.3s;
+        }
         .nav-link:hover { color: var(--primary); }
+
+        /* --- MOBILE HEADER STYLES --- */
+        @media (max-width: 900px) {
+            header { 
+                padding: 15px 20px; 
+                justify-content: space-between; 
+            }
+
+            /* Mobile: Logo Absolute Center */
+            .logo { 
+                position: absolute; 
+                left: 50%; 
+                transform: translateX(-50%); 
+                margin: 0;
+            }
+            .logo img { height: 50px; }
+
+            /* Mobile: Nav stays relative (Left side back button) */
+            .nav-center {
+                position: static;
+                transform: none;
+            }
+            .nav-link span { display: none; } /* Hide text on small screens */
+            .nav-link i { font-size: 1.2rem; }
+        }
+
+        @media (min-width: 901px) {
+            .nav-link span { display: inline; }
+        }
 
         /* --- CONTAINER --- */
         .container {
@@ -159,8 +202,13 @@
 <body>
 
     <header>
-        <div class="logo"><a href="index.html">Soft<span>Cake</span>.</a></div>
-        <a href="index.html" class="nav-link"><i class="fas fa-home"></i> Back Home</a>
+        <div class="logo">
+            <a href="index.html"><img src="logo.png" alt="Soft Cake Logo"></a>
+        </div>
+
+        <nav class="nav-center">
+            <a href="index.html" class="nav-link"><i class="fas fa-home"></i> <span>Back Home</span></a>
+        </nav>
     </header>
 
     <div class="container">
@@ -173,7 +221,7 @@
             <i class="far fa-sad-tear"></i>
             <h3>Your wishlist is empty</h3>
             <p style="margin-bottom: 20px; color: #aaa;">Looks like you haven't found your favorite cake yet.</p>
-            <a href="index.html#cakes" class="btn-shop">Start Shopping</a>
+            <a href="shop.html" class="btn-shop">Start Shopping</a>
         </div>
     </div>
 
@@ -253,7 +301,9 @@
             let cart = JSON.parse(localStorage.getItem('softCakeCart')) || [];
             
             // Add to Cart
-            cart.push({ ...item, qty: 1, size: 'Std' }); // Default values
+            // Defaulting to standard size if not specified in wishlist
+            // For cakes, this adds 1kg base price by default logic unless detailed item stored
+            cart.push({ ...item, qty: 1, size: 'Standard' }); 
             localStorage.setItem('softCakeCart', JSON.stringify(cart));
             
             // Remove from Wishlist
