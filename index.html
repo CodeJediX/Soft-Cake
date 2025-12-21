@@ -618,9 +618,16 @@
             document.getElementById('m-img').src = curProd.img;
             document.getElementById('m-qty').value = 1;
             
-            // Wishlist Reset
+            // Wishlist Check: Turn heart red if already in wishlist
             const wishBtn = document.getElementById('m-wishlist-btn');
-            wishBtn.classList.remove('active');
+            const wishlist = JSON.parse(localStorage.getItem('softCakeWish')) || [];
+            const isInWishlist = wishlist.some(item => item.id === curProd.id);
+            
+            if (isInWishlist) {
+                wishBtn.classList.add('active');
+            } else {
+                wishBtn.classList.remove('active');
+            }
             
             // Cake Logic Setup
             const cakeOptions = document.getElementById('cake-options');
@@ -671,7 +678,25 @@
 
         function toggleWishlist() {
             const btn = document.getElementById('m-wishlist-btn');
-            btn.classList.toggle('active');
+            let wishlist = JSON.parse(localStorage.getItem('softCakeWish')) || [];
+            
+            // Check if exists
+            const existingIdx = wishlist.findIndex(item => item.id === curProd.id);
+            
+            if (existingIdx > -1) {
+                // Remove
+                wishlist.splice(existingIdx, 1);
+                btn.classList.remove('active');
+                showToast("Removed from Wishlist");
+            } else {
+                // Add
+                wishlist.push(curProd);
+                btn.classList.add('active');
+                showToast("Added to Wishlist");
+            }
+            
+            // Save back to LocalStorage
+            localStorage.setItem('softCakeWish', JSON.stringify(wishlist));
         }
 
         function addToCartModal() {

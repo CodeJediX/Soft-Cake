@@ -215,7 +215,7 @@
         <h1 class="page-title">Your Wishlist <i class="far fa-heart" style="color:var(--primary); font-size:0.8em;"></i></h1>
         
         <div id="wishlist-grid" class="wishlist-grid">
-            </div>
+        </div>
 
         <div id="empty-state" class="empty-state">
             <i class="far fa-sad-tear"></i>
@@ -283,8 +283,10 @@
         function removeItem(index) {
             // Animate removal before deleting logic
             const items = document.querySelectorAll('.wish-item');
-            items[index].style.transform = 'translateX(100px)';
-            items[index].style.opacity = '0';
+            if(items[index]) {
+                items[index].style.transform = 'translateX(100px)';
+                items[index].style.opacity = '0';
+            }
             
             setTimeout(() => {
                 wishlist.splice(index, 1);
@@ -301,16 +303,22 @@
             let cart = JSON.parse(localStorage.getItem('softCakeCart')) || [];
             
             // Add to Cart
-            // Defaulting to standard size if not specified in wishlist
-            // For cakes, this adds 1kg base price by default logic unless detailed item stored
-            cart.push({ ...item, qty: 1, size: 'Standard' }); 
+            // Defaulting to standard size/price since wishlist doesn't store cake weight options
+            cart.push({ 
+                ...item, 
+                qty: 1, 
+                size: 'Standard',
+                total: item.price // Important: Ensure total is set so cart page calculation works
+            }); 
             localStorage.setItem('softCakeCart', JSON.stringify(cart));
             
-            // Remove from Wishlist
-            removeItem(index);
+            // Remove from Wishlist logic (without trigger Toast 'Removed')
+            wishlist.splice(index, 1);
+            localStorage.setItem('softCakeWish', JSON.stringify(wishlist));
+            renderWishlist();
             
-            // Override toast message from removeItem to "Added to Cart"
-            setTimeout(() => showToast("Moved to Cart!"), 350); 
+            // Show Success Toast
+            showToast("Moved to Cart!"); 
         }
 
         // Init

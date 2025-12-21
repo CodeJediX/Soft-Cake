@@ -10,9 +10,9 @@
 
     <style>
         :root {
-            --primary: #c69c6d;      /* Light Brown/Gold */
+            --primary: #c69c6d;       /* Light Brown/Gold */
             --primary-dark: #b08968;
-            --bg-cream: #f9f5f0;     /* Background */
+            --bg-cream: #f9f5f0;      /* Background */
             --white: #ffffff;
             --text-dark: #4a4a4a;
             --text-light: #888;
@@ -668,7 +668,13 @@
             document.getElementById('m-desc').innerText = curProd.desc || 'Freshly baked goodness.';
             document.getElementById('m-img').src = curProd.img;
             document.getElementById('m-qty').value = 1;
-            document.getElementById('m-wishlist-btn').classList.remove('active');
+            
+            // Wishlist Logic for Shop
+            const wishBtn = document.getElementById('m-wishlist-btn');
+            const wishlist = JSON.parse(localStorage.getItem('softCakeWish')) || [];
+            const isInWishlist = wishlist.some(item => item.id === curProd.id);
+            if (isInWishlist) wishBtn.classList.add('active');
+            else wishBtn.classList.remove('active');
             
             const cakeOptions = document.getElementById('cake-options');
             if(curProd.cat === 'cakes') {
@@ -719,7 +725,22 @@
             showToast("Added to Cart Successfully!");
         }
 
-        function toggleWishlist() { document.getElementById('m-wishlist-btn').classList.toggle('active'); }
+        function toggleWishlist() { 
+            const btn = document.getElementById('m-wishlist-btn');
+            let wishlist = JSON.parse(localStorage.getItem('softCakeWish')) || [];
+            const existingIdx = wishlist.findIndex(item => item.id === curProd.id);
+            
+            if (existingIdx > -1) {
+                wishlist.splice(existingIdx, 1);
+                btn.classList.remove('active');
+                showToast("Removed from Wishlist");
+            } else {
+                wishlist.push(curProd);
+                btn.classList.add('active');
+                showToast("Added to Wishlist");
+            }
+            localStorage.setItem('softCakeWish', JSON.stringify(wishlist));
+        }
         
         function showToast(msg) {
             const x = document.getElementById("toast");
