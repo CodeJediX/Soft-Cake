@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Wishlist - Soft Cake</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- THEME VARIABLES --- */
+        :root {
+            --primary: #d4a373;
+            --primary-dark: #b08968;
+            --bg-light: #f5efe6;
+            --bg-white: #ffffff;
+            --text-dark: #2f2e2e;
+            --danger: #e63946;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+        
+        body { 
+            font-family: 'Montserrat', sans-serif; 
+            background-color: var(--bg-light); 
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- HEADER --- */
+        header {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo a { 
+            font-family: 'Playfair Display', serif; font-size: 1.5rem; 
+            font-weight: 700; color: var(--text-dark); text-decoration: none; 
+        }
+        .logo span { color: var(--primary); }
+
+        .nav-link { color: var(--text-dark); text-decoration: none; font-weight: 500; transition: 0.3s; }
+        .nav-link:hover { color: var(--primary); }
+
+        /* --- CONTAINER --- */
+        .container {
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 0 20px;
+            flex: 1;
+        }
+
+        .page-title {
+            text-align: center; margin-bottom: 40px;
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            position: relative;
+            animation: fadeInDown 0.8s ease;
+        }
+        
+        @keyframes fadeInDown { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:translateY(0); } }
+
+        /* --- WISHLIST ITEMS --- */
+        .wishlist-grid { display: flex; flex-direction: column; gap: 20px; }
+
+        .wish-item {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: 0.4s;
+            position: relative;
+            overflow: hidden;
+            animation: slideUp 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+
+        .wish-item:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+
+        .item-left { display: flex; align-items: center; gap: 20px; flex: 1; }
+        
+        .item-img {
+            width: 100px; height: 100px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .item-img img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .wish-item:hover .item-img img { transform: scale(1.1); }
+
+        .item-info h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin-bottom: 5px; }
+        .item-info .price { color: var(--primary); font-weight: 600; font-size: 1.1rem; }
+        .item-info .stock { font-size: 0.8rem; color: #28a745; margin-top: 5px; display: block; }
+
+        .item-actions { display: flex; gap: 10px; align-items: center; }
+
+        /* --- BUTTONS --- */
+        .btn {
+            padding: 10px 20px;
+            border: none; border-radius: 30px;
+            cursor: pointer; font-weight: 600; font-size: 0.9rem;
+            transition: 0.3s; display: flex; align-items: center; gap: 8px;
+        }
+
+        .btn-cart { background: var(--primary); color: white; }
+        .btn-cart:hover { background: var(--primary-dark); transform: scale(1.05); }
+
+        .btn-remove { 
+            background: #fff0f0; color: var(--danger); 
+            width: 40px; height: 40px; padding: 0; justify-content: center;
+        }
+        .btn-remove:hover { background: var(--danger); color: white; transform: rotate(90deg); }
+
+        /* --- EMPTY STATE --- */
+        .empty-state {
+            text-align: center; padding: 60px;
+            display: none; animation: fadeIn 1s;
+        }
+        .empty-state i { font-size: 4rem; color: #ddd; margin-bottom: 20px; }
+        .empty-state h3 { font-size: 1.5rem; margin-bottom: 15px; color: #888; }
+        .btn-shop {
+            display: inline-block; padding: 12px 30px;
+            background: var(--text-dark); color: white;
+            text-decoration: none; border-radius: 30px;
+            transition: 0.3s;
+        }
+        .btn-shop:hover { background: var(--primary); }
+
+        /* --- TOAST NOTIFICATION --- */
+        #toast {
+            visibility: hidden; min-width: 250px;
+            background-color: #333; color: #fff;
+            text-align: center; border-radius: 5px;
+            padding: 16px; position: fixed; z-index: 1000;
+            left: 50%; bottom: 30px; transform: translateX(-50%);
+            font-size: 15px; opacity: 0; transition: opacity 0.5s, bottom 0.5s;
+        }
+        #toast.show { visibility: visible; opacity: 1; bottom: 50px; }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .wish-item { flex-direction: column; text-align: center; }
+            .item-left { flex-direction: column; width: 100%; margin-bottom: 15px; }
+            .item-actions { width: 100%; justify-content: center; }
+            .btn-cart { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo"><a href="index.html">Soft<span>Cake</span>.</a></div>
+        <a href="index.html" class="nav-link"><i class="fas fa-home"></i> Back Home</a>
+    </header>
+
+    <div class="container">
+        <h1 class="page-title">Your Wishlist <i class="far fa-heart" style="color:var(--primary); font-size:0.8em;"></i></h1>
+        
+        <div id="wishlist-grid" class="wishlist-grid">
+            </div>
+
+        <div id="empty-state" class="empty-state">
+            <i class="far fa-sad-tear"></i>
+            <h3>Your wishlist is empty</h3>
+            <p style="margin-bottom: 20px; color: #aaa;">Looks like you haven't found your favorite cake yet.</p>
+            <a href="index.html#cakes" class="btn-shop">Start Shopping</a>
+        </div>
+    </div>
+
+    <div id="toast">Action Successful</div>
+
+    <script>
+        // Load data
+        let wishlist = JSON.parse(localStorage.getItem('softCakeWish')) || [];
+        const container = document.getElementById('wishlist-grid');
+        const emptyState = document.getElementById('empty-state');
+
+        function renderWishlist() {
+            container.innerHTML = '';
+            
+            if (wishlist.length === 0) {
+                container.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            container.style.display = 'flex';
+            emptyState.style.display = 'none';
+
+            wishlist.forEach((item, index) => {
+                const delay = index * 100; // Staggered animation
+                const html = `
+                    <div class="wish-item" style="animation-delay: ${delay}ms">
+                        <div class="item-left">
+                            <div class="item-img">
+                                <img src="${item.img}" alt="${item.name}">
+                            </div>
+                            <div class="item-info">
+                                <h3>${item.name}</h3>
+                                <span class="price">Rs. ${item.price}</span>
+                                <span class="stock"><i class="fas fa-check-circle"></i> In Stock</span>
+                            </div>
+                        </div>
+                        <div class="item-actions">
+                            <button class="btn btn-cart" onclick="moveToCart(${index})">
+                                <i class="fas fa-shopping-bag"></i> Add to Cart
+                            </button>
+                            <button class="btn btn-remove" onclick="removeItem(${index})" title="Remove">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += html;
+            });
+        }
+
+        function showToast(message) {
+            const x = document.getElementById("toast");
+            x.innerText = message;
+            x.className = "show";
+            setTimeout(() => { x.className = x.className.replace("show", ""); }, 3000);
+        }
+
+        function removeItem(index) {
+            // Animate removal before deleting logic
+            const items = document.querySelectorAll('.wish-item');
+            items[index].style.transform = 'translateX(100px)';
+            items[index].style.opacity = '0';
+            
+            setTimeout(() => {
+                wishlist.splice(index, 1);
+                localStorage.setItem('softCakeWish', JSON.stringify(wishlist));
+                renderWishlist();
+                showToast("Removed from Wishlist");
+            }, 300);
+        }
+
+        function moveToCart(index) {
+            const item = wishlist[index];
+            
+            // Get Cart
+            let cart = JSON.parse(localStorage.getItem('softCakeCart')) || [];
+            
+            // Add to Cart
+            cart.push({ ...item, qty: 1, size: 'Std' }); // Default values
+            localStorage.setItem('softCakeCart', JSON.stringify(cart));
+            
+            // Remove from Wishlist
+            removeItem(index);
+            
+            // Override toast message from removeItem to "Added to Cart"
+            setTimeout(() => showToast("Moved to Cart!"), 350); 
+        }
+
+        // Init
+        renderWishlist();
+    </script>
+</body>
+</html>

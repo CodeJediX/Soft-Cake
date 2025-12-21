@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - Soft Cake</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #d4a373;
+            --primary-dark: #b08968;
+            --bg-light: #f5efe6;
+            --text-dark: #2f2e2e;
+            --white: #ffffff;
+            --danger: #e63946;
+            --success: #25D366;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+        
+        body { 
+            font-family: 'Montserrat', sans-serif; 
+            background-color: var(--bg-light); 
+            color: var(--text-dark);
+        }
+
+        /* --- HEADER --- */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 100;
+        }
+
+        .logo a { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--text-dark); text-decoration: none; }
+        .logo span { color: var(--primary); }
+        .nav-link { color: var(--text-dark); text-decoration: none; font-weight: 500; }
+        .nav-link:hover { color: var(--primary); }
+
+        /* --- LAYOUT --- */
+        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+        
+        .page-header { text-align: center; margin-bottom: 40px; animation: fadeIn 0.8s; }
+        .page-header h1 { font-family: 'Playfair Display', serif; font-size: 2.5rem; }
+
+        .cart-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        /* --- LEFT: CART ITEMS --- */
+        .cart-items { display: flex; flex-direction: column; gap: 20px; }
+
+        .cart-card {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+            transition: 0.3s;
+            animation: slideUp 0.5s ease forwards;
+        }
+        
+        @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+        
+        .cart-card:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
+
+        .item-img { width: 80px; height: 80px; border-radius: 10px; overflow: hidden; margin-right: 20px; flex-shrink: 0; }
+        .item-img img { width: 100%; height: 100%; object-fit: cover; }
+
+        .item-details { flex: 1; }
+        .item-details h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; margin-bottom: 5px; }
+        .item-details .meta { font-size: 0.85rem; color: #888; }
+        
+        .item-qty { display: flex; align-items: center; gap: 10px; margin: 0 20px; }
+        .qty-btn {
+            width: 30px; height: 30px; border-radius: 50%; border: 1px solid #ddd;
+            background: white; cursor: pointer; display: flex; justify-content: center; align-items: center;
+            transition: 0.2s;
+        }
+        .qty-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
+        .qty-val { font-weight: 600; width: 20px; text-align: center; }
+
+        .item-price { font-weight: 700; font-size: 1.1rem; color: var(--primary-dark); min-width: 80px; text-align: right; }
+        
+        .btn-remove { 
+            color: #aaa; margin-left: 20px; cursor: pointer; transition: 0.3s; font-size: 1.1rem; 
+        }
+        .btn-remove:hover { color: var(--danger); transform: scale(1.1); }
+
+        /* --- RIGHT: SUMMARY & CHECKOUT --- */
+        .cart-summary {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            position: sticky; top: 100px; /* Sticky sidebar */
+        }
+
+        .summary-header { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 20px; border-bottom: 2px solid var(--bg-light); padding-bottom: 15px; }
+        
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 15px; color: #666; }
+        .summary-row.total { font-weight: 700; color: var(--text-dark); font-size: 1.3rem; border-top: 2px solid var(--bg-light); padding-top: 15px; margin-top: 10px; }
+
+        /* Checkout Form */
+        .checkout-form { margin-top: 30px; }
+        .form-group { margin-bottom: 15px; position: relative; }
+        
+        .form-input {
+            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;
+            font-family: 'Montserrat', sans-serif; transition: 0.3s; background: #fafafa;
+        }
+        .form-input:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 3px rgba(212, 163, 115, 0.1); }
+
+        .btn-checkout {
+            width: 100%; padding: 15px; border: none; border-radius: 8px;
+            background: var(--success); color: white; font-weight: 600; font-size: 1rem;
+            cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px;
+            transition: 0.3s; margin-top: 10px;
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
+        }
+        .btn-checkout:hover { background: #1ebd59; transform: translateY(-2px); }
+
+        /* Empty State */
+        .empty-cart { text-align: center; padding: 50px; grid-column: 1 / -1; }
+        .empty-cart i { font-size: 4rem; color: #ddd; margin-bottom: 20px; }
+        .btn-shop { display: inline-block; padding: 10px 25px; background: var(--text-dark); color: white; text-decoration: none; border-radius: 20px; margin-top: 20px; transition: 0.3s; }
+        .btn-shop:hover { background: var(--primary); }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .cart-layout { grid-template-columns: 1fr; }
+            .cart-summary { position: static; }
+        }
+        @media (max-width: 500px) {
+            .cart-card { flex-wrap: wrap; }
+            .item-qty { margin: 15px 0; }
+            .item-price { margin-left: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo"><a href="index.html">Soft<span>Cake</span>.</a></div>
+        <a href="index.html" class="nav-link"><i class="fas fa-arrow-left"></i> Continue Shopping</a>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>Your Shopping Bag</h1>
+            <p>You are just a few steps away from sweetness.</p>
+        </div>
+
+        <div class="cart-layout" id="cart-container">
+            
+            <div class="cart-items" id="cart-list">
+                </div>
+
+            <div class="cart-summary">
+                <h2 class="summary-header">Order Summary</h2>
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span id="subtotal">Rs. 0</span>
+                </div>
+                <div class="summary-row">
+                    <span>Delivery (Est.)</span>
+                    <span>Rs. 350</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total</span>
+                    <span id="final-total" style="color:var(--primary-dark)">Rs. 0</span>
+                </div>
+
+                <div class="checkout-form">
+                    <h3 style="margin-bottom:15px; font-size:1.1rem;">Delivery Details</h3>
+                    <div class="form-group">
+                        <input type="text" id="c-name" class="form-input" placeholder="Your Full Name">
+                    </div>
+                    <div class="form-group">
+                        <input type="tel" id="c-mobile" class="form-input" placeholder="Mobile Number">
+                    </div>
+                    <div class="form-group">
+                        <textarea id="c-address" class="form-input" rows="3" placeholder="Delivery Address"></textarea>
+                    </div>
+                    <button class="btn-checkout" onclick="checkout()">
+                        <i class="fab fa-whatsapp"></i> Confirm Order
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="empty-state" class="empty-cart" style="display: none;">
+            <i class="fas fa-shopping-basket"></i>
+            <h2>Your bag is empty</h2>
+            <p style="color:#888;">Looks like you haven't made your choice yet.</p>
+            <a href="index.html" class="btn-shop">Browse Products</a>
+        </div>
+    </div>
+
+    <script>
+        // --- LOGIC ---
+        let cart = JSON.parse(localStorage.getItem('softCakeCart')) || [];
+        const deliveryFee = 350;
+
+        function renderCart() {
+            const listContainer = document.getElementById('cart-list');
+            const mainContainer = document.getElementById('cart-container');
+            const emptyContainer = document.getElementById('empty-state');
+            
+            listContainer.innerHTML = '';
+            let subtotal = 0;
+
+            if (cart.length === 0) {
+                mainContainer.style.display = 'none';
+                emptyContainer.style.display = 'block';
+                return;
+            }
+
+            mainContainer.style.display = 'grid';
+            emptyContainer.style.display = 'none';
+
+            cart.forEach((item, index) => {
+                const itemTotal = item.price * item.qty;
+                subtotal += itemTotal;
+
+                const html = `
+                    <div class="cart-card">
+                        <div class="item-img">
+                            <img src="${item.img}" alt="${item.name}">
+                        </div>
+                        <div class="item-details">
+                            <h3>${item.name}</h3>
+                            <div class="meta">Size: ${item.size}</div>
+                        </div>
+                        <div class="item-qty">
+                            <div class="qty-btn" onclick="updateQty(${index}, -1)">-</div>
+                            <div class="qty-val">${item.qty}</div>
+                            <div class="qty-btn" onclick="updateQty(${index}, 1)">+</div>
+                        </div>
+                        <div class="item-price">Rs. ${itemTotal}</div>
+                        <div class="btn-remove" onclick="removeItem(${index})"><i class="fas fa-trash-alt"></i></div>
+                    </div>
+                `;
+                listContainer.innerHTML += html;
+            });
+
+            // Update Totals
+            document.getElementById('subtotal').innerText = 'Rs. ' + subtotal;
+            document.getElementById('final-total').innerText = 'Rs. ' + (subtotal + deliveryFee);
+        }
+
+        function updateQty(index, change) {
+            if (cart[index].qty + change > 0) {
+                cart[index].qty += change;
+                localStorage.setItem('softCakeCart', JSON.stringify(cart));
+                renderCart();
+            }
+        }
+
+        function removeItem(index) {
+            if(confirm("Remove this item?")) {
+                cart.splice(index, 1);
+                localStorage.setItem('softCakeCart', JSON.stringify(cart));
+                renderCart();
+            }
+        }
+
+        function checkout() {
+            const name = document.getElementById('c-name').value;
+            const mobile = document.getElementById('c-mobile').value;
+            const address = document.getElementById('c-address').value;
+
+            if (!name || !mobile || !address) {
+                alert("Please fill in all delivery details.");
+                return;
+            }
+
+            // Calculate Totals again for the message
+            let subtotal = 0;
+            let itemsMsg = "";
+            cart.forEach(item => {
+                subtotal += (item.price * item.qty);
+                itemsMsg += `• ${item.name} (${item.size}) x ${item.qty} - Rs. ${item.price * item.qty}%0A`;
+            });
+            const total = subtotal + deliveryFee;
+
+            // Format WhatsApp Message
+            let msg = `*🍰 NEW ORDER - SOFT CAKE 🍰*%0A%0A`;
+            msg += `*Customer:* ${name}%0A`;
+            msg += `*Phone:* ${mobile}%0A`;
+            msg += `*Address:* ${address}%0A`;
+            msg += `---------------------------%0A`;
+            msg += itemsMsg;
+            msg += `---------------------------%0A`;
+            msg += `*Subtotal:* Rs. ${subtotal}%0A`;
+            msg += `*Delivery:* Rs. ${deliveryFee}%0A`;
+            msg += `*GRAND TOTAL: Rs. ${total}*%0A%0A`;
+            msg += `_Please confirm this order._`;
+
+            // Open WhatsApp
+            window.open(`https://wa.me/94727919882?text=${msg}`, '_blank');
+            
+            // Optional: Clear cart after order? 
+            // localStorage.removeItem('softCakeCart');
+        }
+
+        // Initialize
+        renderCart();
+    </script>
+</body>
+</html>

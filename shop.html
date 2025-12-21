@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Menu - Soft Cake</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #d4a373;      /* Light Brown/Gold */
+            --primary-dark: #b08968;
+            --bg-cream: #f9f5f0;     /* Background */
+            --white: #ffffff;
+            --text-dark: #4a4a4a;
+            --text-light: #888;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-cream);
+            color: var(--text-dark);
+        }
+
+        /* --- HEADER --- */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 100;
+        }
+
+        .logo a { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--text-dark); text-decoration: none; }
+        .logo span { color: var(--primary); }
+        .nav-link { color: var(--text-dark); text-decoration: none; font-weight: 500; transition:0.3s; }
+        .nav-link:hover { color: var(--primary); }
+
+        /* --- PAGE LAYOUT --- */
+        .page-banner {
+            text-align: center; padding: 60px 20px;
+            background: var(--white); margin-bottom: 40px;
+        }
+        .page-banner h1 { font-family: 'Playfair Display', serif; font-size: 3rem; margin-bottom: 10px; }
+        .page-banner p { color: var(--primary); font-style: italic; }
+
+        .container {
+            max-width: 1400px; margin: 0 auto; padding: 0 20px 60px;
+            display: flex; gap: 40px; align-items: flex-start;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            flex: 0 0 280px;
+            background: var(--white);
+            padding: 30px;
+            border-radius: 15px;
+            position: sticky; top: 100px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+            transition: 0.3s;
+        }
+
+        .widget { margin-bottom: 35px; }
+        .widget h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; margin-bottom: 20px; position: relative; padding-bottom: 10px; }
+        .widget h3::after { content:''; position: absolute; bottom:0; left:0; width: 40px; height: 2px; background: var(--primary); }
+
+        /* Search */
+        .search-box { position: relative; }
+        .search-box input {
+            width: 100%; padding: 12px 15px; padding-right: 40px;
+            border: 1px solid #eee; border-radius: 25px;
+            font-family: inherit; color: var(--text-dark);
+        }
+        .search-box i { position: absolute; right: 15px; top: 13px; color: #ccc; }
+
+        /* Categories */
+        .cat-link {
+            display: flex; justify-content: space-between;
+            padding: 10px 0; color: var(--text-light); text-decoration: none;
+            transition: 0.3s; border-bottom: 1px dashed #eee;
+        }
+        .cat-link:hover, .cat-link.active { color: var(--primary); padding-left: 5px; font-weight: 500; }
+
+        /* Price Range */
+        input[type=range] {
+            width: 100%; -webkit-appearance: none; background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%;
+            background: var(--primary); cursor: pointer; margin-top: -6px;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 4px; cursor: pointer; background: #eee; border-radius: 2px;
+        }
+        .price-label { font-size: 0.9rem; color: var(--text-dark); margin-top: 10px; font-weight: 600; display: flex; justify-content: space-between; }
+
+        /* --- PRODUCT GRID --- */
+        .shop-content { flex: 1; }
+        
+        .products-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 30px;
+        }
+
+        .product-card {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: 0.4s ease;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+            border: 1px solid transparent;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(198, 156, 109, 0.15);
+            border-color: rgba(198, 156, 109, 0.3);
+        }
+
+        .img-box {
+            height: 260px; position: relative; overflow: hidden; background: #fdfdfd;
+        }
+        .img-box img { width: 100%; height: 100%; object-fit: cover; transition: 0.6s; }
+        .product-card:hover .img-box img { transform: scale(1.1); }
+
+        /* Hover Actions */
+        .actions {
+            position: absolute; bottom: 15px; left: 0; width: 100%;
+            text-align: center; transform: translateY(50px); opacity: 0; transition: 0.4s;
+        }
+        .product-card:hover .actions { transform: translateY(0); opacity: 1; }
+
+        .btn-add {
+            background: var(--white); color: var(--text-dark);
+            border: none; padding: 10px 20px; border-radius: 30px;
+            font-weight: 600; cursor: pointer; font-size: 0.8rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); transition: 0.3s;
+            display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn-add:hover { background: var(--primary); color: white; }
+
+        /* Card Info */
+        .info-box { padding: 20px; text-align: center; }
+        .info-box .cat { font-size: 0.75rem; text-transform: uppercase; color: #aaa; letter-spacing: 1px; }
+        .info-box h4 { font-family: 'Playfair Display', serif; font-size: 1.1rem; margin: 5px 0; color: var(--text-dark); }
+        .info-box .price { color: var(--primary); font-weight: 700; font-size: 1.1rem; }
+
+        /* --- TOAST NOTIFICATION --- */
+        #toast {
+            visibility: hidden; min-width: 280px;
+            background-color: var(--text-dark); color: #fff;
+            text-align: center; border-radius: 50px;
+            padding: 16px; position: fixed; z-index: 1000;
+            left: 50%; bottom: 30px; transform: translateX(-50%);
+            font-size: 14px; opacity: 0; transition: opacity 0.5s, bottom 0.5s;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        #toast.show { visibility: visible; opacity: 1; bottom: 50px; }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .container { flex-direction: column; }
+            .sidebar { width: 100%; position: static; margin-bottom: 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo"><a href="index.html">Soft<span>Cake</span>.</a></div>
+        <nav>
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="cart.html" class="nav-link" style="margin-left: 20px;"><i class="fas fa-shopping-bag"></i> Cart</a>
+        </nav>
+    </header>
+
+    <div class="page-banner">
+        <h1 data-aos="fade-down">Our Collection</h1>
+        <p data-aos="fade-up">Handcrafted with love, baked to perfection.</p>
+    </div>
+
+    <div class="container">
+        
+        <aside class="sidebar" data-aos="fade-right">
+            <div class="widget">
+                <h3>Search</h3>
+                <div class="search-box">
+                    <input type="text" id="search-input" placeholder="Search cakes..." onkeyup="filterProducts()">
+                    <i class="fas fa-search"></i>
+                </div>
+            </div>
+
+            <div class="widget">
+                <h3>Categories</h3>
+                <a href="#" class="cat-link active" onclick="setCategory('all', this)">All Products <span><i class="fas fa-chevron-right"></i></span></a>
+                <a href="#" class="cat-link" onclick="setCategory('cakes', this)">Cakes <span><i class="fas fa-chevron-right"></i></span></a>
+                <a href="#" class="cat-link" onclick="setCategory('savoury', this)">Savoury <span><i class="fas fa-chevron-right"></i></span></a>
+                <a href="#" class="cat-link" onclick="setCategory('sweets', this)">Sweets <span><i class="fas fa-chevron-right"></i></span></a>
+            </div>
+
+            <div class="widget">
+                <h3>Filter by Price</h3>
+                <input type="range" id="price-range" min="0" max="5000" value="5000" oninput="filterProducts()">
+                <div class="price-label">
+                    <span>Rs. 0</span>
+                    <span id="price-val">Rs. 5000</span>
+                </div>
+            </div>
+        </aside>
+
+        <main class="shop-content">
+            <div class="products-grid" id="grid">
+                </div>
+        </main>
+
+    </div>
+
+    <div id="toast"><i class="fas fa-check-circle" style="color: #4cd137; margin-right: 8px;"></i> Added to Cart Successfully!</div>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init();
+
+        // --- DATA ---
+        // Fallback data if local storage is empty
+        const defaultData = [
+            { id: 1, name: "Spicy Fish Roll", price: 210, cat: "savoury", img: "https://images.unsplash.com/photo-1626804475297-411d8c6b71f5?auto=format&fit=crop&w=600&q=80" },
+            { id: 2, name: "Double Choc Fudge", price: 2500, cat: "cakes", img: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80" },
+            { id: 3, name: "Chicken Bun", price: 150, cat: "savoury", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80" },
+            { id: 4, name: "Butter Cake", price: 1800, cat: "cakes", img: "https://images.unsplash.com/photo-1519340333755-56e9c1d04579?auto=format&fit=crop&w=600&q=80" },
+            { id: 5, name: "Glazed Donut", price: 200, cat: "sweets", img: "https://images.unsplash.com/photo-1551024601-5629f9758f2f?auto=format&fit=crop&w=600&q=80" },
+            { id: 6, name: "Chocolate Brownie", price: 300, cat: "sweets", img: "https://images.unsplash.com/photo-1606313564200-e75d5e30476d?auto=format&fit=crop&w=600&q=80" },
+            { id: 7, name: "Red Velvet", price: 3000, cat: "cakes", img: "https://images.unsplash.com/photo-1586788680434-30d32443d465?auto=format&fit=crop&w=600&q=80" }
+        ];
+
+        let products = JSON.parse(localStorage.getItem('softCakeProducts'));
+        if (!products || products.length === 0) {
+            products = defaultData;
+            localStorage.setItem('softCakeProducts', JSON.stringify(products));
+        }
+
+        let activeCat = 'all';
+
+        // --- RENDER LOGIC ---
+        function render(items) {
+            const grid = document.getElementById('grid');
+            grid.innerHTML = "";
+            
+            if(items.length === 0) {
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 40px; color:#999;">
+                    <i class="far fa-frown" style="font-size:3rem; margin-bottom:10px;"></i>
+                    <p>No products match your criteria.</p>
+                </div>`;
+                return;
+            }
+
+            items.forEach((p, i) => {
+                grid.innerHTML += `
+                    <div class="product-card" data-aos="fade-up" data-aos-delay="${i * 50}">
+                        <div class="img-box">
+                            <img src="${p.img}" alt="${p.name}">
+                            <div class="actions">
+                                <button class="btn-add" onclick="addToCart(${p.id})">
+                                    <i class="fas fa-cart-plus"></i> Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                        <div class="info-box">
+                            <div class="cat">${p.cat}</div>
+                            <h4>${p.name}</h4>
+                            <div class="price">Rs. ${p.price}</div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // --- FILTERING LOGIC ---
+        function filterProducts() {
+            const searchVal = document.getElementById('search-input').value.toLowerCase();
+            const priceVal = document.getElementById('price-range').value;
+            document.getElementById('price-val').innerText = 'Rs. ' + priceVal;
+
+            const filtered = products.filter(p => {
+                const matchesCat = activeCat === 'all' || p.cat === activeCat;
+                const matchesSearch = p.name.toLowerCase().includes(searchVal);
+                const matchesPrice = p.price <= parseInt(priceVal);
+                return matchesCat && matchesSearch && matchesPrice;
+            });
+
+            render(filtered);
+        }
+
+        function setCategory(cat, el) {
+            // Update UI Active State
+            document.querySelectorAll('.cat-link').forEach(l => l.classList.remove('active'));
+            el.classList.add('active');
+            
+            // Logic
+            activeCat = cat;
+            filterProducts(); // Re-run filter based on new cat + existing search/price
+        }
+
+        // --- ADD TO CART ---
+        function addToCart(id) {
+            const p = products.find(i => i.id === id);
+            let cart = JSON.parse(localStorage.getItem('softCakeCart')) || [];
+            
+            // Check if item exists to update qty or add new
+            const existing = cart.find(item => item.id === id);
+            if(existing) {
+                existing.qty++;
+            } else {
+                cart.push({...p, qty: 1, size: 'Std'});
+            }
+            
+            localStorage.setItem('softCakeCart', JSON.stringify(cart));
+            showToast();
+        }
+
+        function showToast() {
+            const x = document.getElementById("toast");
+            x.className = "show";
+            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+        }
+
+        // Handle URL Params for filtering from Home Page
+        const params = new URLSearchParams(window.location.search);
+        const urlCat = params.get('cat');
+        if(urlCat) {
+            // Find link matching the cat and click it (simulated)
+            const links = document.querySelectorAll('.cat-link');
+            links.forEach(link => {
+                if(link.getAttribute('onclick').includes(`'${urlCat}'`)) {
+                    setCategory(urlCat, link);
+                }
+            });
+        } else {
+            render(products);
+        }
+
+    </script>
+</body>
+</html>

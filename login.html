@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Soft Cake</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #c69c6d;      /* Light Brown/Gold */
+            --primary-dark: #a07a50;
+            --bg-cream: #f9f5f0;     /* Background */
+            --white: #ffffff;
+            --text-dark: #4a4a4a;
+            --text-light: #888;
+            --shadow: 0 20px 50px rgba(198, 156, 109, 0.2);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+
+        body { 
+            font-family: 'Montserrat', sans-serif; 
+            height: 100vh; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            /* Light, professional background image */
+            background: url('https://images.unsplash.com/photo-1612203985729-70726954388c?q=80&w=1920&auto=format&fit=crop') no-repeat center center/cover;
+            position: relative;
+        }
+
+        /* White Overlay to soften the background image */
+        body::before {
+            content: ''; position: absolute; top:0; left:0; width:100%; height:100%;
+            background: rgba(255, 255, 255, 0.85); /* 85% White overlay */
+            backdrop-filter: blur(5px);
+        }
+
+        /* --- CARD CONTAINER --- */
+        .container {
+            position: relative;
+            width: 420px;
+            min-height: 580px;
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            padding: 45px 40px;
+            overflow: hidden;
+            color: var(--text-dark);
+            animation: slideUpFade 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+            border: 1px solid rgba(255,255,255,0.8);
+        }
+
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo {
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            color: var(--text-dark);
+        }
+        .logo span { color: var(--primary); }
+
+        /* --- TABS --- */
+        .tabs {
+            display: flex;
+            justify-content: space-between;
+            background: #f0f0f0;
+            border-radius: 30px;
+            padding: 5px;
+            margin-bottom: 35px;
+            position: relative;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .tab {
+            width: 50%;
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            z-index: 1;
+            transition: 0.3s;
+            font-weight: 600;
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .tab.active { color: var(--white); }
+
+        /* Sliding Pill */
+        .slider {
+            position: absolute;
+            top: 5px; left: 5px;
+            width: calc(50% - 5px);
+            height: calc(100% - 10px);
+            background: var(--primary);
+            border-radius: 25px;
+            transition: 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            z-index: 0;
+            box-shadow: 0 4px 10px rgba(198, 156, 109, 0.4);
+        }
+        
+        .tabs.register-mode .slider { left: 50%; }
+
+        /* --- INPUT FIELDS --- */
+        .form-section { display: none; animation: fadeIn 0.4s ease; }
+        .form-section.active { display: block; }
+
+        @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
+        .input-group { position: relative; margin-bottom: 30px; }
+
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 10px 5px;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid #eee;
+            color: var(--text-dark);
+            font-size: 1rem;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .input-group label {
+            position: absolute;
+            top: 10px; left: 5px;
+            font-size: 0.9rem;
+            color: #aaa;
+            pointer-events: none;
+            transition: 0.3s ease;
+        }
+
+        .input-group i {
+            position: absolute;
+            top: 10px; right: 5px;
+            color: #ddd;
+            transition: 0.3s;
+        }
+
+        /* Focus States */
+        .input-group input:focus, .input-group input:valid { border-bottom-color: var(--primary); }
+        .input-group input:focus ~ i { color: var(--primary); }
+
+        .input-group input:focus ~ label, .input-group input:valid ~ label {
+            top: -20px; left: 0;
+            font-size: 0.75rem; color: var(--primary); font-weight: 600;
+        }
+
+        /* --- BUTTONS --- */
+        .btn-submit {
+            width: 100%; padding: 15px;
+            background: var(--primary);
+            color: white; border: none; border-radius: 30px;
+            font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
+            cursor: pointer; transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(198, 156, 109, 0.3);
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px rgba(198, 156, 109, 0.4);
+        }
+
+        /* --- EXTRAS --- */
+        .options { display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 25px; color: #888; }
+        .options a { color: var(--primary); text-decoration: none; font-weight: 500; }
+        
+        .social-text { text-align: center; margin: 25px 0 15px; font-size: 0.85rem; color: #aaa; position: relative; }
+        .social-text::before, .social-text::after {
+            content: ''; position: absolute; top: 50%; width: 30%; height: 1px; background: #eee;
+        }
+        .social-text::before { left: 0; } .social-text::after { right: 0; }
+
+        .social-media { display: flex; justify-content: center; gap: 15px; }
+        .social-icon {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: #f9f9f9; border: 1px solid #eee;
+            display: flex; justify-content: center; align-items: center;
+            color: #555; text-decoration: none; transition: 0.3s;
+        }
+        .social-icon:hover { background: var(--primary); color: white; border-color: var(--primary); transform: rotate(360deg); }
+
+        .footer-link { text-align: center; margin-top: 30px; font-size: 0.9rem; }
+        .footer-link a { color: var(--text-dark); text-decoration: none; font-weight: 500; transition: 0.3s; }
+        .footer-link a:hover { color: var(--primary); }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="logo">Soft<span>Cake</span>.</div>
+    
+    <div class="tabs" id="tab-box">
+        <div class="slider"></div>
+        <div class="tab active" onclick="switchForm('login')">Login</div>
+        <div class="tab" onclick="switchForm('register')">Register</div>
+    </div>
+
+    <div id="login-form" class="form-section active">
+        <div class="input-group">
+            <input type="text" required>
+            <label>Email or Username</label>
+            <i class="fas fa-user"></i>
+        </div>
+        <div class="input-group">
+            <input type="password" required>
+            <label>Password</label>
+            <i class="fas fa-lock"></i>
+        </div>
+        
+        <div class="options">
+            <label><input type="checkbox" style="accent-color: var(--primary);"> Remember me</label>
+            <a href="#">Forgot Password?</a>
+        </div>
+
+        <button class="btn-submit" onclick="simulateLogin()">Sign In</button>
+        
+        <p class="social-text">Or continue with</p>
+        <div class="social-media">
+            <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-google"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+        </div>
+    </div>
+
+    <div id="register-form" class="form-section">
+        <div class="input-group">
+            <input type="text" required>
+            <label>Full Name</label>
+            <i class="fas fa-id-card"></i>
+        </div>
+        <div class="input-group">
+            <input type="email" required>
+            <label>Email Address</label>
+            <i class="fas fa-envelope"></i>
+        </div>
+        <div class="input-group">
+            <input type="tel" required>
+            <label>Mobile Number</label>
+            <i class="fas fa-phone"></i>
+        </div>
+        <div class="input-group">
+            <input type="password" required>
+            <label>Create Password</label>
+            <i class="fas fa-lock"></i>
+        </div>
+        
+        <button class="btn-submit" onclick="alert('Registration Successful!')">Create Account</button>
+    </div>
+
+    <div class="footer-link">
+        <a href="index.html"><i class="fas fa-arrow-left"></i> Back to Home</a>
+    </div>
+</div>
+
+<script>
+    function switchForm(type) {
+        const tabBox = document.getElementById('tab-box');
+        const loginForm = document.getElementById('login-form');
+        const regForm = document.getElementById('register-form');
+        const tabs = document.querySelectorAll('.tab');
+
+        if (type === 'login') {
+            tabBox.classList.remove('register-mode');
+            loginForm.classList.add('active');
+            regForm.classList.remove('active');
+            tabs[0].classList.add('active');
+            tabs[1].classList.remove('active');
+        } else {
+            tabBox.classList.add('register-mode');
+            loginForm.classList.remove('active');
+            regForm.classList.add('active');
+            tabs[0].classList.remove('active');
+            tabs[1].classList.add('active');
+        }
+    }
+
+    function simulateLogin() {
+        const btn = document.querySelector('.btn-submit');
+        
+        // Add loading state
+        btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Authenticating...';
+        btn.style.background = "#888";
+        
+        setTimeout(() => {
+            btn.innerHTML = '<i class="fas fa-check"></i> Welcome Back!';
+            btn.style.background = "#28a745"; // Green for success
+            setTimeout(() => {
+                window.location.href = 'index.html'; // Redirect to home
+            }, 1000);
+        }, 1500);
+    }
+</script>
+
+</body>
+</html>

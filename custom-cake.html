@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Cake Request - Soft Cake</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #c69c6d;      /* Light Brown/Gold */
+            --primary-dark: #a07a50;
+            --bg-cream: #f9f5f0;     /* Very Light Brown/White */
+            --white: #ffffff;
+            --text-dark: #4a4a4a;
+            --text-light: #888;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-cream);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            background: var(--white);
+            width: 1000px;
+            max-width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(198, 156, 109, 0.15);
+            display: flex;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- LEFT SIDE: VISUAL --- */
+        .visual-side {
+            flex: 1;
+            background: url('https://images.unsplash.com/photo-1562772379-0872a4d944d3?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80') center/cover;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            color: var(--white);
+        }
+
+        .visual-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(198, 156, 109, 0.85); /* Brown Overlay */
+        }
+
+        .visual-content {
+            position: relative; z-index: 2; text-align: center;
+        }
+
+        .visual-content h2 {
+            font-family: 'Playfair Display', serif; font-size: 3rem; margin-bottom: 20px;
+        }
+        .visual-content p {
+            font-size: 1.1rem; line-height: 1.6; opacity: 0.9;
+        }
+
+        /* --- RIGHT SIDE: FORM --- */
+        .form-side {
+            flex: 1.2;
+            padding: 50px;
+            position: relative;
+        }
+
+        .header-row {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;
+        }
+        .header-row h3 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--primary); }
+        .close-btn { color: var(--text-light); font-size: 1.5rem; text-decoration: none; transition: 0.3s; }
+        .close-btn:hover { color: var(--primary); transform: rotate(90deg); }
+
+        /* --- INPUT GROUPS --- */
+        .input-group { position: relative; margin-bottom: 25px; }
+
+        .input-group input, 
+        .input-group select, 
+        .input-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            background: transparent;
+            transition: 0.3s;
+            appearance: none; /* Remove default arrow for select */
+        }
+
+        .input-group textarea { resize: none; height: 80px; }
+
+        /* Floating Label Logic */
+        .input-group label {
+            position: absolute;
+            top: 14px; left: 15px;
+            color: var(--text-light);
+            pointer-events: none;
+            transition: 0.3s;
+            font-size: 0.9rem;
+            background: var(--white);
+            padding: 0 5px;
+        }
+
+        .input-group input:focus, .input-group select:focus, .input-group textarea:focus {
+            border-color: var(--primary);
+        }
+
+        .input-group input:focus ~ label, .input-group input:not(:placeholder-shown) ~ label,
+        .input-group select:focus ~ label, .input-group select:valid ~ label,
+        .input-group textarea:focus ~ label, .input-group textarea:not(:placeholder-shown) ~ label {
+            top: -10px; left: 10px; color: var(--primary); font-size: 0.8rem; font-weight: 600;
+        }
+
+        /* --- FILE UPLOAD STYLING --- */
+        .file-upload-box {
+            border: 2px dashed #ddd;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .file-upload-box:hover { border-color: var(--primary); background: #fafafa; }
+        .file-upload-box input {
+            position: absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor: pointer;
+        }
+        .file-icon { font-size: 2rem; color: var(--primary); margin-bottom: 10px; display: block; }
+        .file-note { font-size: 0.8rem; color: #999; margin-top: 5px; }
+
+        /* --- BUTTON --- */
+        .btn-send {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex; justify-content: center; align-items: center; gap: 10px;
+            box-shadow: 0 10px 20px rgba(198, 156, 109, 0.3);
+        }
+        .btn-send:hover { background: var(--primary-dark); transform: translateY(-3px); }
+
+        /* Responsive */
+        @media (max-width: 800px) {
+            .container { flex-direction: column; height: auto; }
+            .visual-side { padding: 60px 20px; }
+            .form-side { padding: 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" data-aos="zoom-in">
+        
+        <div class="visual-side">
+            <div class="visual-overlay"></div>
+            <div class="visual-content">
+                <div style="font-size: 4rem; margin-bottom: 10px;"><i class="fas fa-birthday-cake"></i></div>
+                <h2>Bake Your<br>Imagination</h2>
+                <p>Tell us what you dream of, and our artisan bakers will bring it to life.</p>
+            </div>
+        </div>
+
+        <div class="form-side">
+            <div class="header-row">
+                <h3>Design Details</h3>
+                <a href="index.html" class="close-btn"><i class="fas fa-times"></i></a>
+            </div>
+
+            <div class="input-group">
+                <input type="text" id="c_name" placeholder=" " required>
+                <label>Your Name</label>
+            </div>
+
+            <div style="display: flex; gap: 15px;">
+                <div class="input-group" style="flex: 1;">
+                    <select id="flavor" required>
+                        <option value="" disabled selected></option>
+                        <option value="Vanilla Butter">Vanilla Butter</option>
+                        <option value="Double Chocolate">Double Chocolate</option>
+                        <option value="Red Velvet">Red Velvet</option>
+                        <option value="Coffee Mocha">Coffee Mocha</option>
+                        <option value="Fruit Gateau">Fruit Gateau</option>
+                    </select>
+                    <label>Flavor Preference</label>
+                    <i class="fas fa-chevron-down" style="position: absolute; right: 15px; top: 15px; color: #ccc; pointer-events: none; font-size: 0.8rem;"></i>
+                </div>
+
+                <div class="input-group" style="flex: 1;">
+                    <input type="number" id="weight" placeholder=" " min="1" step="0.5">
+                    <label>Weight (Kg)</label>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <input type="text" id="wording" placeholder=" ">
+                <label>Wording on Cake (e.g. Happy Birthday)</label>
+            </div>
+
+            <div class="input-group">
+                <textarea id="notes" placeholder=" "></textarea>
+                <label>Special Instructions / Theme</label>
+            </div>
+
+            <div class="file-upload-box">
+                <i class="fas fa-cloud-upload-alt file-icon"></i>
+                <span>Have a reference image?</span>
+                <div class="file-note">*You will attach the image in WhatsApp after clicking 'Request Quote'</div>
+                <input type="file" disabled style="cursor: default;">
+            </div>
+
+            <button class="btn-send" onclick="sendToWhatsApp()">
+                <i class="fab fa-whatsapp"></i> Request Quote
+            </button>
+
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init();
+
+        function sendToWhatsApp() {
+            // Get Values
+            const name = document.getElementById('c_name').value;
+            const flavor = document.getElementById('flavor').value;
+            const weight = document.getElementById('weight').value;
+            const wording = document.getElementById('wording').value;
+            const notes = document.getElementById('notes').value;
+
+            // Simple Validation
+            if(!name || !flavor || !weight) {
+                alert("Please fill in your Name, Flavor, and Weight.");
+                return;
+            }
+
+            // Format Message
+            let msg = `*🎂 CUSTOM CAKE INQUIRY 🎂*%0A%0A`;
+            msg += `*Name:* ${name}%0A`;
+            msg += `*Flavor:* ${flavor}%0A`;
+            msg += `*Weight:* ${weight} kg%0A`;
+            msg += `*Wording:* "${wording}"%0A`;
+            msg += `*Notes:* ${notes}%0A%0A`;
+            msg += `_(I will attach the reference image now)_`;
+
+            // Open WhatsApp
+            window.open(`https://wa.me/94727919882?text=${msg}`, '_blank');
+        }
+    </script>
+</body>
+</html>
