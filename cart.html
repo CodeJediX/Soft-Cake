@@ -171,6 +171,8 @@
         .checkout-form { margin-top: 30px; }
         .form-group { margin-bottom: 15px; position: relative; }
         
+        .form-label { display:block; font-size: 0.85rem; color: #666; margin-bottom: 5px; font-weight: 600;}
+
         .form-input {
             width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;
             font-family: 'Montserrat', sans-serif; transition: 0.3s; background: #fafafa;
@@ -250,11 +252,18 @@
 
                 <div class="checkout-form">
                     <h3 style="margin-bottom:15px; font-size:1.1rem;">Customer Details</h3>
+                    
                     <div class="form-group">
                         <input type="text" id="c-name" class="form-input" placeholder="Your Full Name">
                     </div>
+                    
                     <div class="form-group">
                         <input type="tel" id="c-mobile" class="form-input" placeholder="Mobile Number">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Order Needed By:</label>
+                        <input type="date" id="c-date" class="form-input">
                     </div>
                     
                     <div class="form-group" id="address-group" style="display:none;">
@@ -283,6 +292,24 @@
         let orderType = 'takeaway'; // Default
         const deliveryCost = 350;
 
+        // Auto-fill Logic
+        window.onload = function() {
+            // 1. Set Date Min to Today
+            const dateInput = document.getElementById('c-date');
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.setAttribute('min', today);
+
+            // 2. Auto-fill User Data from Login
+            const user = JSON.parse(localStorage.getItem('softCakeUser'));
+            if(user) {
+                if(user.name) document.getElementById('c-name').value = user.name;
+                if(user.phone) document.getElementById('c-mobile').value = user.phone;
+            }
+
+            // 3. Render Cart
+            renderCart();
+        };
+
         function renderCart() {
             const listContainer = document.getElementById('cart-list');
             const mainContainer = document.getElementById('cart-container');
@@ -301,7 +328,6 @@
             emptyContainer.style.display = 'none';
 
             cart.forEach((item, index) => {
-                // Use stored total, fallback to calculation if missing
                 let itemTotal = item.total; 
                 if(!itemTotal) itemTotal = item.price * item.qty;
 
@@ -338,12 +364,11 @@
             const newQty = item.qty + change;
 
             if (newQty > 0) {
-                // Determine unit price to update total correctly
                 let currentLineTotal = item.total || (item.price * item.qty);
                 let unitPrice = currentLineTotal / item.qty;
 
                 item.qty = newQty;
-                item.total = unitPrice * newQty; // Update total based on new qty
+                item.total = unitPrice * newQty;
 
                 localStorage.setItem('softCakeCart', JSON.stringify(cart));
                 renderCart();
@@ -392,11 +417,16 @@
         function checkout() {
             const name = document.getElementById('c-name').value;
             const mobile = document.getElementById('c-mobile').value;
+            const date = document.getElementById('c-date').value;
             const address = document.getElementById('c-address').value;
 
             // Validation
             if (!name || !mobile) {
                 alert("Please fill in Name and Mobile Number.");
+                return;
+            }
+            if (!date) {
+                alert("Please select an Order Needed Date.");
                 return;
             }
             if (orderType === 'delivery' && !address) {
@@ -422,6 +452,7 @@
             msg += `*Type:* ${typeLabel}%0A%0A`;
             msg += `*Customer:* ${name}%0A`;
             msg += `*Phone:* ${mobile}%0A`;
+            msg += `*Date Needed:* ${date}%0A`;
             
             if(orderType === 'delivery') {
                 msg += `*Address:* ${address}%0A`;
@@ -438,9 +469,6 @@
             // Open WhatsApp
             window.open(`https://wa.me/94704287604?text=${msg}`, '_blank');
         }
-
-        // Initialize
-        renderCart();
     </script>
 </body>
 </html>
