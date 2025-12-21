@@ -34,15 +34,13 @@
             display: flex;
             align-items: center;
             position: sticky; top: 0; z-index: 100;
-            height: 90px; /* Fixed height for stability */
+            height: 90px;
         }
 
-        /* Desktop: Logo Left */
         .logo { margin-right: auto; z-index: 2; }
         .logo a { display: block; }
         .logo img { height: 75px; transition: 0.3s; }
 
-        /* Desktop: Nav Center */
         .nav-center {
             position: absolute;
             left: 50%;
@@ -57,35 +55,6 @@
             transition: 0.3s;
         }
         .nav-link:hover { color: var(--primary); }
-
-        /* --- MOBILE HEADER STYLES --- */
-        @media (max-width: 900px) {
-            header { 
-                padding: 15px 20px; 
-                justify-content: space-between; 
-            }
-
-            /* Mobile: Logo Absolute Center */
-            .logo { 
-                position: absolute; 
-                left: 50%; 
-                transform: translateX(-50%); 
-                margin: 0;
-            }
-            .logo img { height: 50px; }
-
-            /* Mobile: Nav stays relative (Left side back button) */
-            .nav-center {
-                position: static;
-                transform: none;
-            }
-            .nav-link span { display: none; } /* Optional: Hide text on very small screens, keep icon */
-            .nav-link i { font-size: 1.2rem; }
-        }
-
-        @media (min-width: 901px) {
-            .nav-link span { display: inline; }
-        }
 
         /* --- LAYOUT --- */
         .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
@@ -147,7 +116,7 @@
             padding: 30px;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            position: sticky; top: 100px; /* Sticky sidebar */
+            position: sticky; top: 100px;
         }
 
         .summary-header { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 20px; border-bottom: 2px solid var(--bg-light); padding-bottom: 15px; }
@@ -155,7 +124,6 @@
         .summary-row { display: flex; justify-content: space-between; margin-bottom: 15px; color: #666; }
         .summary-row.total { font-weight: 700; color: var(--text-dark); font-size: 1.3rem; border-top: 2px solid var(--bg-light); padding-top: 15px; margin-top: 10px; }
 
-        /* Order Type Selector */
         .order-type-selector {
             display: flex; gap: 10px; margin-bottom: 20px; background: #f9f9f9; padding: 5px; border-radius: 8px;
         }
@@ -167,10 +135,8 @@
             background: var(--white); border-color: var(--primary); color: var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
-        /* Checkout Form */
         .checkout-form { margin-top: 30px; }
         .form-group { margin-bottom: 15px; position: relative; }
-        
         .form-label { display:block; font-size: 0.85rem; color: #666; margin-bottom: 5px; font-weight: 600;}
 
         .form-input {
@@ -194,8 +160,80 @@
         .btn-shop { display: inline-block; padding: 10px 25px; background: var(--text-dark); color: white; text-decoration: none; border-radius: 20px; margin-top: 20px; transition: 0.3s; }
         .btn-shop:hover { background: var(--primary); }
 
-        /* Layout Responsive */
+        /* --- ATTRACTIVE POP-UPS --- */
+        
+        /* 1. TOAST NOTIFICATION (For Alerts) */
+        #toast-notification {
+            visibility: hidden;
+            min-width: 300px;
+            background-color: var(--white);
+            color: #333;
+            text-align: center;
+            border-radius: 50px;
+            padding: 16px 24px;
+            position: fixed;
+            z-index: 3000;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            font-size: 0.95rem;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.4s, bottom 0.4s;
+            border-left: 6px solid var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        #toast-notification i { font-size: 1.2rem; }
+        #toast-notification.show { visibility: visible; opacity: 1; bottom: 50px; }
+        #toast-notification.error { border-left-color: var(--danger); }
+        #toast-notification.error i { color: var(--danger); }
+        #toast-notification.success { border-left-color: var(--success); }
+        #toast-notification.success i { color: var(--success); }
+
+        /* 2. CONFIRM MODAL (For Deletion) */
+        .confirm-overlay {
+            display: none;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 4000;
+            justify-content: center; align-items: center;
+            backdrop-filter: blur(3px);
+            animation: fadeIn 0.3s ease;
+        }
+        .confirm-overlay.show { display: flex; }
+        
+        .confirm-box {
+            background: white; padding: 30px; border-radius: 12px;
+            width: 350px; text-align: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            transform: scale(0.9); animation: popIn 0.3s ease forwards;
+        }
+        .confirm-box h3 { font-family: 'Playfair Display', serif; margin-bottom: 10px; font-size: 1.5rem; }
+        .confirm-box p { color: #666; margin-bottom: 25px; font-size: 0.95rem; }
+        
+        .confirm-actions { display: flex; gap: 10px; justify-content: center; }
+        .btn-confirm {
+            padding: 10px 20px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s;
+        }
+        .btn-confirm.yes { background: var(--danger); color: white; }
+        .btn-confirm.yes:hover { background: #c0392b; }
+        .btn-confirm.no { background: #eee; color: #333; }
+        .btn-confirm.no:hover { background: #ddd; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes popIn { to { transform: scale(1); } }
+
+        /* Responsive */
         @media (max-width: 900px) {
+            header { padding: 15px 20px; justify-content: space-between; }
+            .logo { position: absolute; left: 50%; transform: translateX(-50%); margin: 0; }
+            .logo img { height: 50px; }
+            .nav-center { position: static; transform: none; }
+            .nav-link span { display: none; }
+            .nav-link i { font-size: 1.2rem; }
             .cart-layout { grid-template-columns: 1fr; }
             .cart-summary { position: static; }
         }
@@ -207,6 +245,23 @@
     </style>
 </head>
 <body>
+
+    <div id="toast-notification">
+        <i class="fas fa-info-circle"></i>
+        <span id="toast-msg">Notification Message</span>
+    </div>
+
+    <div id="confirm-modal" class="confirm-overlay">
+        <div class="confirm-box">
+            <i class="fas fa-trash-alt" style="font-size: 2rem; color: var(--danger); margin-bottom: 15px;"></i>
+            <h3>Remove Item?</h3>
+            <p>Are you sure you want to remove this item from your cart?</p>
+            <div class="confirm-actions">
+                <button class="btn-confirm no" onclick="closeConfirmModal()">Cancel</button>
+                <button class="btn-confirm yes" onclick="confirmRemove()">Yes, Remove</button>
+            </div>
+        </div>
+    </div>
 
     <header>
         <div class="logo">
@@ -287,29 +342,46 @@
     </div>
 
     <script>
-        // --- LOGIC ---
+        // --- DATA & STATE ---
         let cart = JSON.parse(localStorage.getItem('softCakeCart')) || [];
-        let orderType = 'takeaway'; // Default
+        let orderType = 'takeaway'; 
         const deliveryCost = 350;
+        let itemToDeleteIndex = null; // Store index for modal
 
-        // Auto-fill Logic
+        // --- INIT ---
         window.onload = function() {
-            // 1. Set Date Min to Today
             const dateInput = document.getElementById('c-date');
             const today = new Date().toISOString().split('T')[0];
             dateInput.setAttribute('min', today);
 
-            // 2. Auto-fill User Data from Login
             const user = JSON.parse(localStorage.getItem('softCakeUser'));
             if(user) {
                 if(user.name) document.getElementById('c-name').value = user.name;
                 if(user.phone) document.getElementById('c-mobile').value = user.phone;
             }
 
-            // 3. Render Cart
             renderCart();
         };
 
+        // --- POP-UP FUNCTIONS ---
+        function showToast(msg, type = 'error') {
+            const toast = document.getElementById('toast-notification');
+            const msgSpan = document.getElementById('toast-msg');
+            const icon = toast.querySelector('i');
+
+            msgSpan.innerText = msg;
+            toast.className = ''; // Reset classes
+            toast.classList.add(type); // Add error/success class
+
+            // Set Icon
+            if(type === 'error') icon.className = 'fas fa-exclamation-circle';
+            else icon.className = 'fas fa-check-circle';
+
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        }
+
+        // --- RENDER CART ---
         function renderCart() {
             const listContainer = document.getElementById('cart-list');
             const mainContainer = document.getElementById('cart-container');
@@ -328,9 +400,7 @@
             emptyContainer.style.display = 'none';
 
             cart.forEach((item, index) => {
-                let itemTotal = item.total; 
-                if(!itemTotal) itemTotal = item.price * item.qty;
-
+                let itemTotal = item.total || (item.price * item.qty);
                 subtotal += itemTotal;
 
                 const html = `
@@ -348,13 +418,12 @@
                             <div class="qty-btn" onclick="updateQty(${index}, 1)">+</div>
                         </div>
                         <div class="item-price">Rs. ${itemTotal.toLocaleString()}</div>
-                        <div class="btn-remove" onclick="removeItem(${index})"><i class="fas fa-trash-alt"></i></div>
+                        <div class="btn-remove" onclick="askRemoveItem(${index})"><i class="fas fa-trash-alt"></i></div>
                     </div>
                 `;
                 listContainer.innerHTML += html;
             });
 
-            // Update Totals Display
             document.getElementById('subtotal').innerText = 'Rs. ' + subtotal.toLocaleString();
             updateFinalTotal(subtotal);
         }
@@ -375,32 +444,41 @@
             }
         }
 
-        function removeItem(index) {
-            if(confirm("Remove this item?")) {
-                cart.splice(index, 1);
+        // --- REMOVE ITEM LOGIC (WITH CUSTOM MODAL) ---
+        function askRemoveItem(index) {
+            itemToDeleteIndex = index;
+            document.getElementById('confirm-modal').classList.add('show');
+        }
+
+        function confirmRemove() {
+            if (itemToDeleteIndex !== null) {
+                cart.splice(itemToDeleteIndex, 1);
                 localStorage.setItem('softCakeCart', JSON.stringify(cart));
                 renderCart();
+                showToast("Item removed from cart.", "success");
             }
+            closeConfirmModal();
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirm-modal').classList.remove('show');
+            itemToDeleteIndex = null;
         }
 
         // --- ORDER TYPE LOGIC ---
         function setOrderType(type) {
             orderType = type;
             
-            // Visual Update
             document.getElementById('opt-delivery').classList.remove('active');
             document.getElementById('opt-takeaway').classList.remove('active');
             document.getElementById('opt-' + type).classList.add('active');
 
-            // Show/Hide Address
             const addrGroup = document.getElementById('address-group');
             if(type === 'delivery') {
                 addrGroup.style.display = 'block';
             } else {
                 addrGroup.style.display = 'none';
             }
-
-            // Recalculate Total
             renderCart(); 
         }
 
@@ -420,21 +498,21 @@
             const date = document.getElementById('c-date').value;
             const address = document.getElementById('c-address').value;
 
-            // Validation
+            // Custom Toast Validation
             if (!name || !mobile) {
-                alert("Please fill in Name and Mobile Number.");
+                showToast("Please fill in Name and Mobile Number.", "error");
                 return;
             }
             if (!date) {
-                alert("Please select an Order Needed Date.");
+                showToast("Please select an Order Needed Date.", "error");
                 return;
             }
             if (orderType === 'delivery' && !address) {
-                alert("Please fill in Delivery Address.");
+                showToast("Please fill in Delivery Address.", "error");
                 return;
             }
 
-            // Calculate Totals
+            // Processing...
             let subtotal = 0;
             let itemsMsg = "";
             cart.forEach(item => {
@@ -466,7 +544,6 @@
             msg += `*GRAND TOTAL: Rs. ${total}*%0A%0A`;
             msg += `_Please confirm my order._`;
 
-            // Open WhatsApp
             window.open(`https://wa.me/94704287604?text=${msg}`, '_blank');
         }
     </script>
