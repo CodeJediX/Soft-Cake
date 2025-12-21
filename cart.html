@@ -26,19 +26,66 @@
             color: var(--text-dark);
         }
 
-        /* --- HEADER --- */
+        /* --- HEADER STYLES --- */
         header {
             background: rgba(255, 255, 255, 0.95);
-            padding: 20px 40px;
+            padding: 15px 40px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-            display: flex; justify-content: space-between; align-items: center;
+            display: flex;
+            align-items: center;
             position: sticky; top: 0; z-index: 100;
+            height: 90px; /* Fixed height for stability */
         }
 
-        .logo a { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--text-dark); text-decoration: none; }
-        .logo span { color: var(--primary); }
-        .nav-link { color: var(--text-dark); text-decoration: none; font-weight: 500; }
+        /* Desktop: Logo Left */
+        .logo { margin-right: auto; z-index: 2; }
+        .logo a { display: block; }
+        .logo img { height: 75px; transition: 0.3s; }
+
+        /* Desktop: Nav Center */
+        .nav-center {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+        }
+        .nav-link { 
+            color: var(--text-dark); 
+            text-decoration: none; 
+            font-weight: 500; 
+            font-size: 1rem;
+            transition: 0.3s;
+        }
         .nav-link:hover { color: var(--primary); }
+
+        /* --- MOBILE HEADER STYLES --- */
+        @media (max-width: 900px) {
+            header { 
+                padding: 15px 20px; 
+                justify-content: space-between; 
+            }
+
+            /* Mobile: Logo Absolute Center */
+            .logo { 
+                position: absolute; 
+                left: 50%; 
+                transform: translateX(-50%); 
+                margin: 0;
+            }
+            .logo img { height: 50px; }
+
+            /* Mobile: Nav stays relative (Left side back button) */
+            .nav-center {
+                position: static;
+                transform: none;
+            }
+            .nav-link span { display: none; } /* Optional: Hide text on very small screens, keep icon */
+            .nav-link i { font-size: 1.2rem; }
+        }
+
+        @media (min-width: 901px) {
+            .nav-link span { display: inline; }
+        }
 
         /* --- LAYOUT --- */
         .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
@@ -100,7 +147,7 @@
             padding: 30px;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            position: sticky; top: 100px;
+            position: sticky; top: 100px; /* Sticky sidebar */
         }
 
         .summary-header { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 20px; border-bottom: 2px solid var(--bg-light); padding-bottom: 15px; }
@@ -145,7 +192,7 @@
         .btn-shop { display: inline-block; padding: 10px 25px; background: var(--text-dark); color: white; text-decoration: none; border-radius: 20px; margin-top: 20px; transition: 0.3s; }
         .btn-shop:hover { background: var(--primary); }
 
-        /* Responsive */
+        /* Layout Responsive */
         @media (max-width: 900px) {
             .cart-layout { grid-template-columns: 1fr; }
             .cart-summary { position: static; }
@@ -160,8 +207,13 @@
 <body>
 
     <header>
-        <div class="logo"><a href="index.html">Soft<span>Cake</span>.</a></div>
-        <a href="shop.html" class="nav-link"><i class="fas fa-arrow-left"></i> Continue Shopping</a>
+        <div class="logo">
+            <a href="index.html"><img src="logo.png" alt="Soft Cake Logo"></a>
+        </div>
+
+        <nav class="nav-center">
+            <a href="shop.html" class="nav-link"><i class="fas fa-arrow-left"></i> <span>Continue Shopping</span></a>
+        </nav>
     </header>
 
     <div class="container">
@@ -249,12 +301,8 @@
             emptyContainer.style.display = 'none';
 
             cart.forEach((item, index) => {
-                // Use the STORED total if available (for cakes), else calc logic fallback
-                // Note: item.total was calculated in index.html based on weight.
-                // If we change qty here, we calculate unit price from the stored total and current qty.
-                
+                // Use stored total, fallback to calculation if missing
                 let itemTotal = item.total; 
-                // Fallback for old data or non-cake items if total wasn't stored explicitly
                 if(!itemTotal) itemTotal = item.price * item.qty;
 
                 subtotal += itemTotal;
@@ -266,7 +314,7 @@
                         </div>
                         <div class="item-details">
                             <h3>${item.name}</h3>
-                            <div class="meta">Size/Option: ${item.size}</div>
+                            <div class="meta">Option: ${item.size}</div>
                         </div>
                         <div class="item-qty">
                             <div class="qty-btn" onclick="updateQty(${index}, -1)">-</div>
@@ -290,10 +338,7 @@
             const newQty = item.qty + change;
 
             if (newQty > 0) {
-                // We need to determine unit price to update total correctly
-                // Unit Price = Current Total / Current Qty
-                // Or stored in index.html? If not stored, we derive it.
-                // Assuming item.total is the line total for the previous qty.
+                // Determine unit price to update total correctly
                 let currentLineTotal = item.total || (item.price * item.qty);
                 let unitPrice = currentLineTotal / item.qty;
 
