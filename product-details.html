@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details - Soft Cake</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #c69c6d;
+            --primary-dark: #b08968;
+            --bg-cream: #f9f5f0;
+            --white: #ffffff;
+            --text-dark: #4a4a4a;
+            --heart-red: #e74c3c;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-cream); color: var(--text-dark); }
+
+        /* HEADER & NAV */
+        header { background: rgba(255, 255, 255, 0.98); padding: 15px 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
+        
+        .navbar { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            max-width: 1400px; 
+            margin: 0 auto; 
+            position: relative; /* Essential for absolute positioning of desktop links */
+        }
+
+        .logo a { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--text-dark); text-decoration: none; }
+        .logo img { height: 60px; transition: 0.3s; }
+        
+        .nav-links-desktop { display: flex; gap: 30px; align-items: center; position: absolute; left: 50%; transform: translateX(-50%); }
+        .nav-link { color: var(--text-dark); text-decoration: none; font-weight: 500; }
+        
+        .nav-icons { display: flex; align-items: center; gap: 20px; }
+        .nav-icon-link { font-size: 1.2rem; color: var(--text-dark); position: relative; }
+        .cart-badge { position: absolute; top: -8px; right: -10px; background: var(--primary); color: white; font-size: 0.7rem; padding: 2px 6px; border-radius: 50%; }
+
+        /* MAIN CONTAINER */
+        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+
+        .product-wrapper {
+            display: flex; gap: 50px; background: white; padding: 40px; border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.05); margin-bottom: 50px;
+        }
+
+        /* IMAGE SECTION */
+        .product-img { flex: 1; border-radius: 10px; overflow: hidden; height: 500px; position: relative; }
+        .product-img img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .product-img:hover img { transform: scale(1.05); }
+
+        /* INFO SECTION */
+        .product-info { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        .p-cat { text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; color: #888; margin-bottom: 10px; }
+        .p-name { font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 15px; line-height: 1.2; }
+        .p-price { font-size: 1.8rem; color: var(--primary); font-weight: 700; margin-bottom: 25px; }
+        .p-desc { line-height: 1.6; color: #666; margin-bottom: 30px; font-size: 1rem; }
+
+        /* OPTIONS */
+        .options-box { background: #f9f9f9; padding: 20px; border-radius: 10px; margin-bottom: 30px; }
+        .option-row { margin-bottom: 15px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+        .opt-label { font-weight: 600; min-width: 100px; }
+        
+        input[type="number"] { padding: 10px; border: 1px solid #ddd; border-radius: 5px; width: 80px; text-align: center; font-size: 1rem; }
+
+        /* ACTIONS */
+        .action-row { display: flex; gap: 15px; align-items: center; margin-top: 10px; }
+        .btn-add { flex: 1; padding: 15px 30px; background: var(--primary); color: white; border: none; border-radius: 30px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-add:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(198, 156, 109, 0.4); }
+        
+        .btn-wish { width: 50px; height: 50px; border: 1px solid #ddd; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; font-size: 1.2rem; }
+        .btn-wish i { color: transparent; -webkit-text-stroke: 1.5px #333; transition: 0.3s; }
+        .btn-wish.active { border-color: var(--heart-red); }
+        .btn-wish.active i { color: var(--heart-red); -webkit-text-stroke: 0; }
+
+        /* TABS (MORE INFO) */
+        .tabs-container { margin-bottom: 60px; }
+        .tabs-header { display: flex; gap: 30px; border-bottom: 2px solid #eee; margin-bottom: 30px; }
+        .tab-btn { padding: 10px 0; font-size: 1.1rem; font-weight: 600; color: #888; cursor: pointer; position: relative; transition: 0.3s; background: none; border: none; font-family: inherit; }
+        .tab-btn.active { color: var(--text-dark); }
+        .tab-btn.active::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 2px; background: var(--primary); }
+        
+        .tab-content { display: none; line-height: 1.8; color: #555; animation: fadeIn 0.5s; }
+        .tab-content.active { display: block; }
+
+        /* SUGGESTIONS */
+        .related-section { margin-top: 50px; }
+        .related-title { font-family: 'Playfair Display', serif; font-size: 2rem; margin-bottom: 30px; text-align: center; }
+        .related-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+        
+        .rel-card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; cursor: pointer; }
+        .rel-card:hover { transform: translateY(-5px); }
+        .rel-img { height: 180px; width: 100%; object-fit: cover; }
+        .rel-info { padding: 15px; text-align: center; }
+        .rel-name { font-weight: 600; margin-bottom: 5px; font-size: 1rem; }
+        .rel-price { color: var(--primary); font-size: 0.9rem; }
+
+        /* TOAST */
+        #toast { visibility: hidden; min-width: 250px; background-color: #333; color: #fff; text-align: center; border-radius: 4px; padding: 16px; position: fixed; z-index: 1000; left: 50%; bottom: 30px; transform: translateX(-50%); opacity: 0; transition: opacity 0.5s, bottom 0.5s; }
+        #toast.show { visibility: visible; opacity: 1; bottom: 50px; }
+
+        @keyframes fadeIn { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
+
+        /* --- MOBILE RESPONSIVE STYLES --- */
+        @media (max-width: 800px) {
+            header { padding: 15px 20px; }
+            
+            /* Center Logo on Mobile */
+            .navbar { justify-content: center; }
+            .logo { position: absolute; left: 50%; transform: translateX(-50%); margin: 0; z-index: 1; }
+            .logo img { height: 50px; }
+            .nav-links-desktop { display: none; }
+            
+            /* Keep icons on the right */
+            .nav-icons { position: absolute; right: 0; }
+
+            /* Product Wrapper */
+            .product-wrapper { flex-direction: column; gap: 20px; padding: 20px; }
+            .product-img { height: 300px; }
+            .p-name { font-size: 2rem; }
+            
+            /* Suggestions Grid - 2 per row */
+            .related-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+            .rel-img { height: 140px; } /* Smaller images for mobile */
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="navbar">
+            <div class="logo"><a href="index.html"><img src="logo.png" alt="Soft Cake Logo"></a></div>
+            <nav class="nav-links-desktop">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="shop.html" class="nav-link" style="color:var(--primary);">Shop</a>
+            </nav>
+            <div class="nav-icons">
+                <a href="wishlist.html" class="nav-icon-link"><i class="fas fa-heart"></i></a>
+                <a href="cart.html" class="nav-icon-link"><i class="fas fa-shopping-cart"></i> <span class="cart-badge" id="cart-count">0</span></a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <div class="product-wrapper">
+            <div class="product-img">
+                <img id="p-img" src="" alt="Product Image">
+            </div>
+            
+            <div class="product-info">
+                <div class="p-cat" id="p-cat">Category</div>
+                <h1 class="p-name" id="p-name">Loading...</h1>
+                <div class="p-price" id="p-price">Rs. 0.00</div>
+                <p class="p-desc" id="p-desc">Description loading...</p>
+
+                <div class="options-box">
+                    <div id="cake-options" style="display:none;">
+                        <div class="option-row">
+                            <span class="opt-label">Custom Weight:</span>
+                            <div style="display:flex; gap:10px; align-items:center;">
+                                <input type="number" id="w-kg" value="1" min="0" onchange="calculateTotal()"> <span>kg</span>
+                                <input type="number" id="w-g" value="0" min="0" step="50" onchange="calculateTotal()"> <span>g</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="option-row">
+                        <span class="opt-label">Quantity:</span>
+                        <input type="number" id="qty" value="1" min="1" onchange="calculateTotal()">
+                    </div>
+
+                    <div class="option-row" style="border-top:1px solid #e0e0e0; padding-top:15px; margin-top:10px; justify-content: space-between;">
+                        <span style="font-size:1.1rem; font-weight:bold;">Total Price:</span>
+                        <span id="total-price" style="font-size:1.3rem; color:var(--primary); font-weight:bold;">Rs. 0.00</span>
+                    </div>
+                </div>
+
+                <div class="action-row">
+                    <button class="btn-add" onclick="addToCart()">Add to Cart</button>
+                    <button class="btn-wish" id="wish-btn" onclick="toggleWishlist()"><i class="fas fa-heart"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="tabs-container">
+            <div class="tabs-header">
+                <button class="tab-btn active" onclick="openTab('desc')">Description</button>
+                <button class="tab-btn" onclick="openTab('ingr')">Ingredients</button>
+                <button class="tab-btn" onclick="openTab('reviews')">Reviews (0)</button>
+            </div>
+            <div id="desc" class="tab-content active">
+                <p id="tab-desc-text">Full details regarding the product will appear here.</p>
+            </div>
+            <div id="ingr" class="tab-content">
+                <p>Flour, Sugar, Eggs, Butter, Milk, Natural Flavors. (Allergen info: Contains Dairy and Gluten).</p>
+            </div>
+            <div id="reviews" class="tab-content">
+                <p style="font-style:italic; color:#888;">No reviews yet for this product.</p>
+            </div>
+        </div>
+
+        <div class="related-section">
+            <h2 class="related-title">You may also like</h2>
+            <div class="related-grid" id="related-grid">
+                </div>
+        </div>
+
+    </div>
+
+    <div id="toast">Message</div>
+
+    <script>
+        // --- DATA SETUP ---
+        const defaultData = [
+            { id: 101, name: "Egg Sandwich", price: 100, cat: "savoury", img: "https://images.unsplash.com/photo-1553909489-cd47e3b4430f?w=300", desc: "Classic creamy egg filling.", tags: "creamy,egg" },
+            { id: 102, name: "Fish Sandwich", price: 100, cat: "savoury", img: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=300", desc: "Spicy tuna fish mix.", tags: "spicy,fish" },
+            { id: 103, name: "Chicken Sandwich", price: 150, cat: "savoury", img: "https://images.unsplash.com/photo-1509722747041-616f39b57569?w=300", desc: "Roast chicken spread.", tags: "spicy,chicken" },
+            { id: 104, name: "Veg Sandwich", price: 100, cat: "savoury", img: "https://images.unsplash.com/photo-1540713475856-3a3a28eb0ef0?w=300", desc: "Fresh garden vegetables.", tags: "veggie,fresh" },
+            { id: 201, name: "Egg Roll", price: 150, cat: "savoury", img: "https://images.unsplash.com/photo-1606757389656-78c66c3a2f8b?w=300", desc: "Chinese style egg roll.", tags: "egg,fried" },
+            { id: 202, name: "Fish Roll", price: 110, cat: "savoury", img: "https://images.unsplash.com/photo-1626804475297-411d8c6b71f5?w=300", desc: "Crispy fish roll.", tags: "spicy,fish" },
+            { id: 301, name: "Fish Patty", price: 110, cat: "savoury", img: "https://images.unsplash.com/photo-1626804475317-a5509a25032a?w=300", desc: "Flaky pastry with fish.", tags: "fish,pastry" },
+            { id: 401, name: "Chocolate Éclair", price: 140, cat: "sweets", img: "https://images.unsplash.com/photo-1612203985729-70726954388c?w=300", desc: "Choux pastry with cream.", tags: "chocolate,creamy" },
+            { id: 403, name: "Butter Cupcake", price: 130, cat: "sweets", img: "https://images.unsplash.com/photo-1519340333755-56e9c1d04579?w=300", desc: "Soft butter cupcake.", tags: "creamy,butter" },
+            { id: 404, name: "Choc Cupcake", price: 150, cat: "sweets", img: "https://images.unsplash.com/photo-1550617931-e17a7b70dce2?w=300", desc: "Rich chocolate frosted.", tags: "chocolate" },
+            { id: 501, name: "Butter Cake", price: 1300, cat: "cakes", img: "https://images.unsplash.com/photo-1563729784474-d779b95f8bc2?w=300", desc: "Premium butter cake.", tags: "creamy,butter" },
+            { id: 502, name: "Chocolate Cake", price: 1700, cat: "cakes", img: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=300", desc: "Dark fudge chocolate.", tags: "chocolate" },
+            { id: 503, name: "Ribbon Cake", price: 1500, cat: "cakes", img: "https://images.unsplash.com/photo-1586788680434-30d32443d465?w=300", desc: "Colorful ribbon layers.", tags: "fruity,creamy" }
+        ];
+
+        let products = JSON.parse(localStorage.getItem('softCakeProducts')) || [];
+        if (products.length === 0) { products = defaultData; localStorage.setItem('softCakeProducts', JSON.stringify(products)); }
+
+        // --- PAGE LOGIC ---
+        let currentProduct = null;
+
+        window.onload = function() {
+            updateBadge();
+            const params = new URLSearchParams(window.location.search);
+            const id = parseInt(params.get('id'));
+
+            if (!id) {
+                document.querySelector('.container').innerHTML = "<h2 style='text-align:center'>Product not found. <a href='shop.html'>Go Back</a></h2>";
+                return;
+            }
+
+            currentProduct = products.find(p => p.id === id);
+            
+            if (currentProduct) {
+                renderProduct();
+                renderRelated();
+                checkWishlist();
+            }
+        };
+
+        function renderProduct() {
+            document.getElementById('p-img').src = currentProduct.img;
+            document.getElementById('p-name').innerText = currentProduct.name;
+            document.getElementById('p-cat').innerText = currentProduct.cat;
+            document.getElementById('p-desc').innerText = currentProduct.desc;
+            document.getElementById('tab-desc-text').innerText = currentProduct.desc + " Made with the finest ingredients daily at Soft Cake.";
+            
+            if(currentProduct.cat === 'cakes') {
+                document.getElementById('cake-options').style.display = 'block';
+                document.getElementById('p-price').innerText = "Rs. " + currentProduct.price + ".00 (1kg Base)";
+            } else {
+                document.getElementById('cake-options').style.display = 'none';
+                document.getElementById('p-price').innerText = "Rs. " + currentProduct.price + ".00";
+            }
+            calculateTotal();
+        }
+
+        function calculateTotal() {
+            const qty = parseInt(document.getElementById('qty').value) || 1;
+            let unitPrice = currentProduct.price;
+
+            if(currentProduct.cat === 'cakes') {
+                const kg = parseInt(document.getElementById('w-kg').value) || 0;
+                const g = parseInt(document.getElementById('w-g').value) || 0;
+                let totalGrams = (kg * 1000) + g;
+                if(totalGrams <= 0) totalGrams = 1000;
+                unitPrice = totalGrams * (currentProduct.price / 1000);
+            }
+
+            document.getElementById('total-price').innerText = "Rs. " + (unitPrice * qty).toLocaleString() + ".00";
+        }
+
+        // --- UPDATED SUGGESTION ENGINE (WORD MATCHING) ---
+        function renderRelated() {
+            // 1. Get Keywords from Name (Split by space, ignore words less than 3 chars)
+            const currentWords = currentProduct.name.toLowerCase().split(/\s+/).filter(w => w.length > 2);
+            
+            // 2. Get Keywords from Tags
+            const currentTags = (currentProduct.tags || "").toLowerCase().split(',').filter(t => t.length > 0);
+
+            // 3. Filter other products
+            let related = products.filter(p => {
+                if (p.id === currentProduct.id) return false; // Skip current item
+
+                const pName = p.name.toLowerCase();
+                const pTags = (p.tags || "").toLowerCase();
+
+                // CHECK 1: Name match
+                const nameMatch = currentWords.some(word => pName.includes(word));
+                
+                // CHECK 2: Tag match
+                const tagMatch = currentTags.some(tag => pTags.includes(tag));
+
+                return nameMatch || tagMatch;
+            });
+
+            // 4. Fallback: If found less than 4 items, fill with same Category
+            if (related.length < 4) {
+                const fillItems = products.filter(p => {
+                    return p.id !== currentProduct.id && 
+                           p.cat === currentProduct.cat && 
+                           !related.includes(p);
+                });
+                related = related.concat(fillItems);
+            }
+
+            // Limit to 4 items
+            related = related.slice(0, 4);
+
+            const grid = document.getElementById('related-grid');
+            if(related.length === 0) {
+                document.querySelector('.related-section').style.display = 'none';
+                return;
+            }
+
+            grid.innerHTML = ""; 
+            related.forEach(p => {
+                grid.innerHTML += `
+                    <div class="rel-card" onclick="window.location.href='product-details.html?id=${p.id}'">
+                        <img src="${p.img}" class="rel-img">
+                        <div class="rel-info">
+                            <div class="rel-name">${p.name}</div>
+                            <div class="rel-price">Rs. ${p.price}</div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // --- CART & WISHLIST ---
+        function addToCart() {
+            const qty = parseInt(document.getElementById('qty').value);
+            let sizeLabel = "Standard";
+            let finalTotal = 0;
+            let unitPrice = currentProduct.price;
+
+            if(currentProduct.cat === 'cakes') {
+                const kg = parseInt(document.getElementById('w-kg').value) || 0;
+                const g = parseInt(document.getElementById('w-g').value) || 0;
+                let totalGrams = (kg * 1000) + g;
+                if(totalGrams <= 0) totalGrams = 1000;
+                sizeLabel = (totalGrams >= 1000) ? (totalGrams/1000) + "kg" : totalGrams + "g";
+                unitPrice = totalGrams * (currentProduct.price / 1000);
+            }
+            
+            finalTotal = unitPrice * qty;
+
+            let cart = JSON.parse(localStorage.getItem('softCakeCart')) || [];
+            cart.push({ ...currentProduct, qty, size: sizeLabel, total: finalTotal });
+            localStorage.setItem('softCakeCart', JSON.stringify(cart));
+            
+            updateBadge();
+            showToast("Added to Cart Successfully!");
+        }
+
+        function toggleWishlist() {
+            let wishlist = JSON.parse(localStorage.getItem('softCakeWish')) || [];
+            const existingIdx = wishlist.findIndex(item => item.id === currentProduct.id);
+            const btn = document.getElementById('wish-btn');
+
+            if (existingIdx > -1) {
+                wishlist.splice(existingIdx, 1);
+                btn.classList.remove('active');
+                showToast("Removed from Wishlist");
+            } else {
+                wishlist.push(currentProduct);
+                btn.classList.add('active');
+                showToast("Added to Wishlist");
+            }
+            localStorage.setItem('softCakeWish', JSON.stringify(wishlist));
+        }
+
+        function checkWishlist() {
+            let wishlist = JSON.parse(localStorage.getItem('softCakeWish')) || [];
+            if(wishlist.some(item => item.id === currentProduct.id)) {
+                document.getElementById('wish-btn').classList.add('active');
+            }
+        }
+
+        function openTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function showToast(msg) {
+            const x = document.getElementById("toast");
+            x.innerText = msg;
+            x.className = "show";
+            setTimeout(() => { x.className = x.className.replace("show", ""); }, 3000);
+        }
+        function updateBadge() {
+            const cart = JSON.parse(localStorage.getItem('softCakeCart')) || [];
+            document.getElementById('cart-count').innerText = cart.length;
+        }
+    </script>
+</body>
+</html>

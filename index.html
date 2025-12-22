@@ -105,7 +105,7 @@
             margin: 0 auto; 
         }
         
-        .product-card { background: white; border: 1px solid #eaeaea; transition: 0.4s; overflow: hidden; position: relative; border-radius: 6px; }
+        .product-card { background: white; border: 1px solid #eaeaea; transition: 0.4s; overflow: hidden; position: relative; border-radius: 6px; cursor: pointer; }
         .product-card:hover { box-shadow: 0 15px 30px rgba(0,0,0,0.1); transform: translateY(-5px); }
         
         .card-img-box { position: relative; height: 280px; overflow: hidden; background: #f9f9f9; }
@@ -151,69 +151,6 @@
         /* --- FOOTER --- */
         footer { background: #1a1a1a; color: #888; padding: 40px 0; text-align: center; border-top: 1px solid #333; }
 
-        /* --- MODAL --- */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
-        .modal-box { background: white; width: 900px; max-width: 90%; display: flex; box-shadow: 0 20px 50px rgba(0,0,0,0.5); animation: zoomIn 0.3s ease; position: relative; border-radius: 8px; overflow: hidden; }
-        @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        
-        .modal-img { flex: 1; background: #f0f0f0; }
-        .modal-img img { width: 100%; height: 100%; object-fit: cover; }
-        
-        .modal-details { flex: 1; padding: 30px 40px; display: flex; flex-direction: column; justify-content: center; overflow-y: auto; max-height: 90vh; }
-        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 2rem; cursor: pointer; color: #555; z-index: 10; background: rgba(255,255,255,0.8); border-radius: 50%; width: 40px; height: 40px; text-align: center; line-height: 40px; }
-
-        .modal-label { font-weight: 600; display: block; margin-bottom: 8px; font-size: 0.9rem; color: #555; }
-        
-        .custom-weight-inputs { display: flex; gap: 15px; align-items: center; margin-bottom: 15px; }
-        .input-group { display: flex; align-items: center; gap: 5px; }
-        .input-group input { width: 70px; padding: 8px; border: 1px solid #ddd; border-radius: 4px; text-align: center; }
-        .input-group span { font-weight: 500; font-size: 0.9rem; color: #666; }
-
-        .qty-wrapper { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
-        .qty-input { padding: 10px; width: 80px; text-align: center; border: 1px solid #ddd; border-radius: 4px; font-size: 1rem; }
-
-        .modal-actions { display: flex; gap: 10px; align-items: center; margin-top: 10px; }
-        .wishlist-btn { background: white; border: 1px solid #ddd; width: 50px; height: 46px; display: flex; align-items: center; justify-content: center; border-radius: 4px; cursor: pointer; transition: 0.3s; }
-        .wishlist-btn i { color: transparent; -webkit-text-stroke: 1.5px black; font-size: 1.4rem; transition: 0.3s; }
-        .wishlist-btn.active i { color: var(--heart-red); -webkit-text-stroke: 0; }
-
-        /* --- TOAST NOTIFICATION STYLES (NEW) --- */
-        #toast-notification {
-            visibility: hidden;
-            min-width: 300px;
-            background-color: var(--white);
-            color: #333;
-            text-align: center;
-            border-radius: 50px;
-            padding: 16px 24px;
-            position: fixed;
-            z-index: 3000;
-            left: 50%;
-            bottom: 30px;
-            transform: translateX(-50%);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-            font-size: 1rem;
-            font-weight: 500;
-            opacity: 0;
-            transition: opacity 0.5s, bottom 0.5s;
-            border: 2px solid var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        #toast-notification i {
-            color: var(--success-green);
-            font-size: 1.2rem;
-        }
-
-        #toast-notification.show {
-            visibility: visible;
-            opacity: 1;
-            bottom: 50px;
-        }
-        
         /* --- MOBILE QUERIES --- */
         @media (max-width: 900px) {
             .nav-links { display: none; } 
@@ -244,10 +181,6 @@
             .contact-grid { grid-template-columns: 1fr; }
             .contact-map iframe { height: 300px; min-height: auto; }
             .contact-info { padding: 40px 20px; }
-
-            .modal-box { flex-direction: column; height: auto; max-height: 90vh; overflow-y: auto; }
-            .modal-img { height: 250px; flex: none; }
-            .modal-details { padding: 20px; }
         }
 
         @media (max-width: 400px) {
@@ -257,11 +190,6 @@
     </style>
 </head>
 <body id="body-lock">
-
-    <div id="toast-notification">
-        <i class="fas fa-check-circle"></i>
-        <span id="toast-message">Action Successful</span>
-    </div>
 
     <div class="mobile-overlay" id="mobileOverlay" onclick="toggleDrawer()"></div>
     <div class="mobile-drawer" id="mobileDrawer">
@@ -416,70 +344,9 @@
         <p>© 2025 Soft Cake. All Rights Reserved.</p>
     </footer>
 
-    <div id="productModal" class="modal">
-        <div class="modal-box">
-            <span class="close-modal" onclick="closeModal()">×</span>
-            
-            <div class="modal-img">
-                <img id="m-img" src="" alt="">
-            </div>
-            
-            <div class="modal-details">
-                <h2 id="m-name" style="margin-bottom: 5px;">Product Name</h2>
-                <div class="separator" style="margin: 10px 0; width: 40px;"></div>
-                <p id="m-desc" style="color:#666; margin-bottom: 20px; font-size: 0.9rem;">Description goes here.</p>
-                
-                <h3 id="m-price" style="color: var(--primary); font-size: 1.8rem; margin-bottom: 20px;">Rs. 200.00</h3>
-                
-                <div id="cake-options" style="display:none;">
-                    <label class="modal-label">Enter Custom Weight:</label>
-                    <div class="custom-weight-inputs">
-                        <div class="input-group">
-                            <input type="number" id="w-kg" value="1" min="0" onchange="calculateTotal()"> 
-                            <span>kg</span>
-                        </div>
-                        <div class="input-group">
-                            <input type="number" id="w-g" value="0" min="0" step="50" onchange="calculateTotal()"> 
-                            <span>g</span>
-                        </div>
-                    </div>
-                </div>
-
-                <label class="modal-label">Quantity:</label>
-                <div class="qty-wrapper">
-                    <input type="number" id="m-qty" value="1" min="1" class="qty-input" onchange="calculateTotal()">
-                </div>
-
-                <div style="margin-top: auto; border-top: 1px solid #eee; padding-top: 20px;">
-                    <div style="display:flex; justify-content:space-between; margin-bottom: 10px; font-weight:bold;">
-                        <span>Total:</span>
-                        <span id="m-total-price">Rs. 0.00</span>
-                    </div>
-                    
-                    <div class="modal-actions">
-                        <button class="btn" onclick="addToCartModal()" style="flex:1;">Add to Cart</button>
-                        <button class="wishlist-btn" id="m-wishlist-btn" onclick="toggleWishlist()">
-                            <i class="fas fa-heart"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         AOS.init({ duration: 1000, once: true });
-
-        // --- TOAST NOTIFICATION FUNCTION ---
-        function showToast(message) {
-            var x = document.getElementById("toast-notification");
-            var msgSpan = document.getElementById("toast-message");
-            msgSpan.innerText = message;
-            
-            x.className = "show";
-            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-        }
 
         // --- MOBILE DRAWER LOGIC ---
         function toggleDrawer() {
@@ -497,38 +364,27 @@
         }
 
         // --- DYNAMIC DATA LOGIC ---
-        // 1. Define default data (fallback)
         const defaultData = [
-            // Sandwiches
-            { id: 101, name: "Egg Sandwich", price: 100, cat: "savoury", img: "https://images.unsplash.com/photo-1553909489-cd47e3b4430f?auto=format&fit=crop&w=600&q=80", desc: "Classic creamy egg filling." },
-            { id: 102, name: "Fish Sandwich", price: 100, cat: "savoury", img: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=600&q=80", desc: "Spicy tuna fish mix." },
-            { id: 103, name: "Chicken Sandwich", price: 150, cat: "savoury", img: "https://images.unsplash.com/photo-1509722747041-616f39b57569?auto=format&fit=crop&w=600&q=80", desc: "Roast chicken spread." },
-            { id: 104, name: "Veg Sandwich", price: 100, cat: "savoury", img: "https://images.unsplash.com/photo-1540713475856-3a3a28eb0ef0?auto=format&fit=crop&w=600&q=80", desc: "Fresh garden vegetables." },
-            
-            // Rolls
-            { id: 201, name: "Egg Roll", price: 150, cat: "savoury", img: "https://images.unsplash.com/photo-1606757389656-78c66c3a2f8b?auto=format&fit=crop&w=600&q=80", desc: "Chinese style egg roll." },
-            { id: 202, name: "Fish Roll", price: 110, cat: "savoury", img: "https://images.unsplash.com/photo-1626804475297-411d8c6b71f5?auto=format&fit=crop&w=600&q=80", desc: "Crispy fish roll." },
-            { id: 203, name: "Chicken Roll", price: 130, cat: "savoury", img: "https://images.unsplash.com/photo-1541529086526-db283c563270?auto=format&fit=crop&w=600&q=80", desc: "Savoury chicken filling." },
-            { id: 204, name: "Veg Roll", price: 110, cat: "savoury", img: "https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?auto=format&fit=crop&w=600&q=80", desc: "Spicy vegetable mix." },
-
-            // Patties
-            { id: 301, name: "Fish Patty", price: 110, cat: "savoury", img: "https://images.unsplash.com/photo-1626804475317-a5509a25032a?auto=format&fit=crop&w=600&q=80", desc: "Flaky pastry with fish." },
-            { id: 302, name: "Chicken Patty", price: 140, cat: "savoury", img: "https://images.unsplash.com/photo-1579306194872-64d3b7bac4c2?auto=format&fit=crop&w=600&q=80", desc: "Golden crust chicken patty." },
-            { id: 303, name: "Veg Patty", price: 110, cat: "savoury", img: "https://images.unsplash.com/photo-1626804475297-411d8c6b71f5?auto=format&fit=crop&w=600&q=80", desc: "Delicious potato & veg." },
-
-            // Sweets & Treats
-            { id: 401, name: "Chocolate Éclair", price: 140, cat: "sweets", img: "https://images.unsplash.com/photo-1612203985729-70726954388c?auto=format&fit=crop&w=600&q=80", desc: "Choux pastry with cream." },
-            { id: 402, name: "Mini Pizza", price: 200, cat: "savoury", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80", desc: "Bite sized cheesy delight." },
-            { id: 403, name: "Butter Cupcake", price: 130, cat: "sweets", img: "https://images.unsplash.com/photo-1519340333755-56e9c1d04579?auto=format&fit=crop&w=600&q=80", desc: "Soft butter cupcake." },
-            { id: 404, name: "Choc Cupcake", price: 150, cat: "sweets", img: "https://images.unsplash.com/photo-1550617931-e17a7b70dce2?auto=format&fit=crop&w=600&q=80", desc: "Rich chocolate frosted." },
-
-            // Cakes
-            { id: 501, name: "Butter Cake", price: 1300, cat: "cakes", img: "https://images.unsplash.com/photo-1563729784474-d779b95f8bc2?auto=format&fit=crop&w=600&q=80", desc: "Premium butter cake." },
-            { id: 502, name: "Chocolate Cake", price: 1700, cat: "cakes", img: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80", desc: "Dark fudge chocolate." },
-            { id: 503, name: "Ribbon Cake", price: 1500, cat: "cakes", img: "https://images.unsplash.com/photo-1586788680434-30d32443d465?auto=format&fit=crop&w=600&q=80", desc: "Colorful ribbon layers." }
+            { id: 101, name: "Egg Sandwich", price: 100, cat: "savoury", img: "https://images.unsplash.com/photo-1553909489-cd47e3b4430f?auto=format&fit=crop&w=600&q=80", desc: "Classic creamy egg filling.", tags: "creamy,egg" },
+            { id: 102, name: "Fish Sandwich", price: 100, cat: "savoury", img: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=600&q=80", desc: "Spicy tuna fish mix.", tags: "spicy,fish" },
+            { id: 103, name: "Chicken Sandwich", price: 150, cat: "savoury", img: "https://images.unsplash.com/photo-1509722747041-616f39b57569?auto=format&fit=crop&w=600&q=80", desc: "Roast chicken spread.", tags: "spicy,chicken" },
+            { id: 104, name: "Veg Sandwich", price: 100, cat: "savoury", img: "https://images.unsplash.com/photo-1540713475856-3a3a28eb0ef0?auto=format&fit=crop&w=600&q=80", desc: "Fresh garden vegetables.", tags: "veggie,fresh" },
+            { id: 201, name: "Egg Roll", price: 150, cat: "savoury", img: "https://images.unsplash.com/photo-1606757389656-78c66c3a2f8b?auto=format&fit=crop&w=600&q=80", desc: "Chinese style egg roll.", tags: "egg,fried" },
+            { id: 202, name: "Fish Roll", price: 110, cat: "savoury", img: "https://images.unsplash.com/photo-1626804475297-411d8c6b71f5?auto=format&fit=crop&w=600&q=80", desc: "Crispy fish roll.", tags: "spicy,fish" },
+            { id: 203, name: "Chicken Roll", price: 130, cat: "savoury", img: "https://images.unsplash.com/photo-1541529086526-db283c563270?auto=format&fit=crop&w=600&q=80", desc: "Savoury chicken filling.", tags: "spicy,chicken" },
+            { id: 204, name: "Veg Roll", price: 110, cat: "savoury", img: "https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?auto=format&fit=crop&w=600&q=80", desc: "Spicy vegetable mix.", tags: "veggie,spicy" },
+            { id: 301, name: "Fish Patty", price: 110, cat: "savoury", img: "https://images.unsplash.com/photo-1626804475317-a5509a25032a?auto=format&fit=crop&w=600&q=80", desc: "Flaky pastry with fish.", tags: "fish,pastry" },
+            { id: 302, name: "Chicken Patty", price: 140, cat: "savoury", img: "https://images.unsplash.com/photo-1579306194872-64d3b7bac4c2?auto=format&fit=crop&w=600&q=80", desc: "Golden crust chicken patty.", tags: "chicken,pastry" },
+            { id: 303, name: "Veg Patty", price: 110, cat: "savoury", img: "https://images.unsplash.com/photo-1626804475297-411d8c6b71f5?auto=format&fit=crop&w=600&q=80", desc: "Delicious potato & veg.", tags: "veggie,pastry" },
+            { id: 401, name: "Chocolate Éclair", price: 140, cat: "sweets", img: "https://images.unsplash.com/photo-1612203985729-70726954388c?auto=format&fit=crop&w=600&q=80", desc: "Choux pastry with cream.", tags: "chocolate,creamy" },
+            { id: 402, name: "Mini Pizza", price: 200, cat: "savoury", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80", desc: "Bite sized cheesy delight.", tags: "cheese,veggie" },
+            { id: 403, name: "Butter Cupcake", price: 130, cat: "sweets", img: "https://images.unsplash.com/photo-1519340333755-56e9c1d04579?auto=format&fit=crop&w=600&q=80", desc: "Soft butter cupcake.", tags: "creamy,butter" },
+            { id: 404, name: "Choc Cupcake", price: 150, cat: "sweets", img: "https://images.unsplash.com/photo-1550617931-e17a7b70dce2?auto=format&fit=crop&w=600&q=80", desc: "Rich chocolate frosted.", tags: "chocolate" },
+            { id: 501, name: "Butter Cake", price: 1300, cat: "cakes", img: "https://images.unsplash.com/photo-1563729784474-d779b95f8bc2?auto=format&fit=crop&w=600&q=80", desc: "Premium butter cake.", tags: "creamy,butter" },
+            { id: 502, name: "Chocolate Cake", price: 1700, cat: "cakes", img: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80", desc: "Dark fudge chocolate.", tags: "chocolate" },
+            { id: 503, name: "Ribbon Cake", price: 1500, cat: "cakes", img: "https://images.unsplash.com/photo-1586788680434-30d32443d465?auto=format&fit=crop&w=600&q=80", desc: "Colorful ribbon layers.", tags: "fruity,creamy" }
         ];
 
-        // 2. Load from LocalStorage OR use default (and save default for Admin to see)
         let products = JSON.parse(localStorage.getItem('softCakeProducts')) || [];
         
         if (products.length === 0) {
@@ -536,18 +392,19 @@
             localStorage.setItem('softCakeProducts', JSON.stringify(products));
         }
 
-        // --- RENDER CARDS ---
+        // --- RENDER CARDS (UPDATED TO REDIRECT) ---
         function createCard(p, delay) {
+            // NOTE: Onclick now redirects to product-details.html?id=...
             return `
-                <div class="product-card" data-aos="fade-up" data-aos-delay="${delay}">
+                <div class="product-card" data-aos="fade-up" data-aos-delay="${delay}" onclick="window.location.href='product-details.html?id=${p.id}'">
                     <div class="card-img-box">
                         <img src="${p.img}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/300?text=No+Image'">
-                        <div class="quick-view" onclick="openModal(${p.id})">Quick View</div>
+                        <div class="quick-view">View Details</div>
                     </div>
                     <div class="card-info">
                         <h3>${p.name}</h3>
                         <span class="price">Rs. ${p.price}.00</span>
-                        <button class="btn-add-cart" onclick="openModal(${p.id})">Add to Cart</button>
+                        <button class="btn-add-cart">View / Add</button>
                     </div>
                 </div>
             `;
@@ -555,7 +412,6 @@
 
         function render(cat, id) {
             const container = document.getElementById(id);
-            // Limit to 4 items
             const items = products.filter(p => p.cat === cat).slice(0, 4);
             let delay = 0;
             if(items.length > 0) {
@@ -568,25 +424,18 @@
             }
         }
 
-        // Render sections dynamically
         render('cakes', 'cakes-container');
         render('savoury', 'savoury-container');
         render('sweets', 'sweets-container');
 
-        // Render Most Sold (Try specific IDs, fallback to any 4 items)
         function renderMostSold() {
             const container = document.getElementById('most-sold-container');
-            const popularIds = [202, 502, 103, 401]; // Preferred IDs
-            
-            // Try to find preferred, if not found (admin deleted), take random 4
+            const popularIds = [202, 502, 103, 401]; 
             let items = products.filter(p => popularIds.includes(p.id));
-            
             if(items.length < 4) {
-                // If specific items missing, fill with others
                 const remaining = products.filter(p => !popularIds.includes(p.id)).slice(0, 4 - items.length);
                 items = items.concat(remaining);
             }
-            
             let delay = 0;
             container.innerHTML = items.map(p => {
                 delay += 50;
@@ -594,7 +443,6 @@
             }).join('');
         }
         renderMostSold();
-
 
         // Slideshow
         let sIdx = 0;
@@ -605,139 +453,10 @@
             slides[sIdx].classList.add('active');
         }, 5000);
 
-        // --- MODAL LOGIC ---
-        let curProd = null;
-
-        function openModal(id) {
-            curProd = products.find(p => p.id === id);
-            if(!curProd) return;
-            
-            // Populate Data
-            document.getElementById('m-name').innerText = curProd.name;
-            document.getElementById('m-desc').innerText = curProd.desc || 'Freshly baked goodness.';
-            document.getElementById('m-img').src = curProd.img;
-            document.getElementById('m-qty').value = 1;
-            
-            // Wishlist Check: Turn heart red if already in wishlist
-            const wishBtn = document.getElementById('m-wishlist-btn');
-            const wishlist = JSON.parse(localStorage.getItem('softCakeWish')) || [];
-            const isInWishlist = wishlist.some(item => item.id === curProd.id);
-            
-            if (isInWishlist) {
-                wishBtn.classList.add('active');
-            } else {
-                wishBtn.classList.remove('active');
-            }
-            
-            // Cake Logic Setup
-            const cakeOptions = document.getElementById('cake-options');
-            if(curProd.cat === 'cakes') {
-                cakeOptions.style.display = 'block';
-                // Default to 1kg 0g
-                document.getElementById('w-kg').value = 1;
-                document.getElementById('w-g').value = 0;
-                document.getElementById('m-price').innerText = 'Rs. ' + curProd.price + '.00 (1kg Base)';
-            } else {
-                cakeOptions.style.display = 'none';
-                document.getElementById('m-price').innerText = 'Rs. ' + curProd.price + '.00';
-            }
-
-            calculateTotal();
-            document.getElementById('productModal').style.display = 'flex';
-        }
-
-        function closeModal() { document.getElementById('productModal').style.display = 'none'; }
-
-        function calculateTotal() {
-            const qty = parseInt(document.getElementById('m-qty').value);
-            if(qty < 1) { document.getElementById('m-qty').value = 1; return; }
-
-            let unitPrice = curProd.price;
-
-            // Cake Dynamic Weight Calculation
-            if(curProd.cat === 'cakes') {
-                const kg = parseInt(document.getElementById('w-kg').value) || 0;
-                const g = parseInt(document.getElementById('w-g').value) || 0;
-                
-                let totalGrams = (kg * 1000) + g;
-                
-                // If user enters 0, fallback to 1kg for calc safety
-                if(totalGrams <= 0) totalGrams = 1000;
-
-                // Base price is for 1000g (1kg)
-                const pricePerGram = curProd.price / 1000;
-                unitPrice = totalGrams * pricePerGram;
-                
-                // Update unit price display
-                document.getElementById('m-price').innerText = 'Rs. ' + unitPrice.toLocaleString() + '.00';
-            }
-
-            const total = unitPrice * qty;
-            document.getElementById('m-total-price').innerText = 'Rs. ' + total.toLocaleString() + '.00';
-        }
-
-        function toggleWishlist() {
-            const btn = document.getElementById('m-wishlist-btn');
-            let wishlist = JSON.parse(localStorage.getItem('softCakeWish')) || [];
-            
-            // Check if exists
-            const existingIdx = wishlist.findIndex(item => item.id === curProd.id);
-            
-            if (existingIdx > -1) {
-                // Remove
-                wishlist.splice(existingIdx, 1);
-                btn.classList.remove('active');
-                showToast("Removed from Wishlist");
-            } else {
-                // Add
-                wishlist.push(curProd);
-                btn.classList.add('active');
-                showToast("Added to Wishlist");
-            }
-            
-            // Save back to LocalStorage
-            localStorage.setItem('softCakeWish', JSON.stringify(wishlist));
-        }
-
-        function addToCartModal() {
-            const qty = parseInt(document.getElementById('m-qty').value);
-            let sizeLabel = "Standard";
-            let unitPrice = curProd.price;
-
-            if(curProd.cat === 'cakes') {
-                const kg = parseInt(document.getElementById('w-kg').value) || 0;
-                const g = parseInt(document.getElementById('w-g').value) || 0;
-                let totalGrams = (kg * 1000) + g;
-                if(totalGrams <= 0) totalGrams = 1000;
-                
-                sizeLabel = (totalGrams >= 1000) 
-                    ? (totalGrams/1000) + "kg" 
-                    : totalGrams + "g";
-                
-                // Base price 1kg = 1000g
-                const pricePerGram = curProd.price / 1000;
-                unitPrice = totalGrams * pricePerGram;
-            }
-
-            let cart = JSON.parse(localStorage.getItem('softCakeCart')) || [];
-            cart.push({ 
-                ...curProd, 
-                qty, 
-                size: sizeLabel, 
-                total: (unitPrice * qty) 
-            });
-            localStorage.setItem('softCakeCart', JSON.stringify(cart));
-            
-            updateBadge();
-            closeModal();
-            showToast("Added to Cart successfully!");
-        }
-
         function updateBadge() {
             const cart = JSON.parse(localStorage.getItem('softCakeCart')) || [];
             document.getElementById('cart-count').innerText = cart.length;
             
-            // Check login status
             const user = JSON.parse(localStorage.getItem('softCakeUser'));
             if(user) {
                 document.getElementById('nav-user-icon').innerHTML = '<i class="fas fa-check-circle" style="color:green"></i>';
