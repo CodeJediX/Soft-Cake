@@ -15,6 +15,8 @@
             --white: #ffffff;
             --text-dark: #4a4a4a;
             --heart-red: #e74c3c;
+            --error: #e74c3c;
+            --success: #2ecc71;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
@@ -29,7 +31,7 @@
             align-items: center; 
             max-width: 1400px; 
             margin: 0 auto; 
-            position: relative; /* Essential for absolute positioning of desktop links */
+            position: relative; 
         }
 
         .logo a { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--text-dark); text-decoration: none; }
@@ -351,6 +353,14 @@
         // --- CART & WISHLIST ---
         function addToCart() {
             const qty = parseInt(document.getElementById('qty').value);
+
+            // --- RESTRICTION LOGIC START ---
+            if ((currentProduct.cat === 'savoury' || currentProduct.cat === 'sweets') && qty < 10) {
+                showToast(`You should buy ${currentProduct.name} more than or equal to 10.`, "error");
+                return; // STOP execution here
+            }
+            // --- RESTRICTION LOGIC END ---
+
             let sizeLabel = "Standard";
             let finalTotal = 0;
             let unitPrice = currentProduct.price;
@@ -371,7 +381,7 @@
             localStorage.setItem('softCakeCart', JSON.stringify(cart));
             
             updateBadge();
-            showToast("Added to Cart Successfully!");
+            showToast("Added to Cart Successfully!", "success");
         }
 
         function toggleWishlist() {
@@ -382,11 +392,11 @@
             if (existingIdx > -1) {
                 wishlist.splice(existingIdx, 1);
                 btn.classList.remove('active');
-                showToast("Removed from Wishlist");
+                showToast("Removed from Wishlist", "normal");
             } else {
                 wishlist.push(currentProduct);
                 btn.classList.add('active');
-                showToast("Added to Wishlist");
+                showToast("Added to Wishlist", "success");
             }
             localStorage.setItem('softCakeWish', JSON.stringify(wishlist));
         }
@@ -405,12 +415,20 @@
             event.target.classList.add('active');
         }
 
-        function showToast(msg) {
+        // Updated Show Toast to accept Type
+        function showToast(msg, type = "normal") {
             const x = document.getElementById("toast");
             x.innerText = msg;
+            
+            // Set Color based on type
+            if(type === 'error') x.style.backgroundColor = 'var(--error)';
+            else if(type === 'success') x.style.backgroundColor = 'var(--success)';
+            else x.style.backgroundColor = '#333';
+
             x.className = "show";
             setTimeout(() => { x.className = x.className.replace("show", ""); }, 3000);
         }
+
         function updateBadge() {
             const cart = JSON.parse(localStorage.getItem('softCakeCart')) || [];
             document.getElementById('cart-count').innerText = cart.length;
